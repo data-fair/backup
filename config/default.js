@@ -36,5 +36,10 @@ module.exports = {
   secretKeys: {
     notifications: 'secret-notifications'
   },
-  tmpdir: '/tmp/backup'
+  tmpdir: '/tmp/backup',
+  autoTask: {
+    exec: 'node scripts/dump.js all',
+    // 1am every day ? '0 1 * * *'
+    cron: null
+  }
 }

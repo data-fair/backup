@@ -50,5 +50,9 @@ module.exports = {
   secretKeys: {
     notifications: 'SECRET_NOTIFICATIONS'
   },
-  tmpdir: 'TMPDIR'
+  tmpdir: 'TMPDIR',
+  autoTask: {
+    exec: 'AUTO_TASK_EXEC',
+    cron: 'AUTO_TASK_CRON'
+  }
 }

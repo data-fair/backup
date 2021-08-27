@@ -55,6 +55,7 @@
     "klaw": "^3.0.0",
     "moment": "^2.24.0",
     "mongodb": "^3.3.0-beta2",
+    "node-cron": "^3.0.0",
     "nuxt": "^2.8.1",
     "pretty-bytes": "^5.2.0",
     "semver-extract": "^1.1.1",

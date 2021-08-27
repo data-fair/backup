@@ -5,5 +5,8 @@ module.exports = {
       'notify-production': '--excludeCollection=notifications'
     }
   },
-  splitSize: '100'
+  splitSize: '100',
+  autoTask: {
+    cron: '* * * * *'
+  }
 }
