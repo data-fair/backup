@@ -81,7 +81,7 @@ exports.rsyncArchive = async (name) => {
     name = 'latest'
     dirName = dateStr(dayjs())
   }
-  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${absoluteBackupDir}/${dirName} ${config.rsync.url}/${name}`)
+  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${absoluteBackupDir}/${dirName}/* ${config.rsync.url}/${name}`)
 }
 
 exports.restore = async (dumpKey, name) => {
