@@ -25,6 +25,10 @@ module.exports = {
     user: 'CA_USER',
     password: 'CA_PASSWORD'
   },
+  rsync: {
+    url: 'RSYNC_URL',
+    password: 'RSYNC_PASSWORD'
+  },
   rotation: {
     day: {
       __name: 'ROTATION_DAY',

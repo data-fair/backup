@@ -25,6 +25,10 @@ module.exports = {
     user: null,
     password: null
   },
+  rsync: {
+    url: null,
+    password: null
+  },
   splitSize: '200000000', // 200M
   rotation: {
     day: 4, // number of fresh daily dumps

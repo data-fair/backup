@@ -16,6 +16,10 @@ if (config.cloudArchive.tenant) {
   fs.writeFileSync('/tmp/ca-password.txt', `${config.cloudArchive.tenant}.${config.cloudArchive.user}.${config.cloudArchive.password}`)
 }
 
+if (config.rsync.password) {
+  fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password
+}
+
 async function exec(cmd, opts = {}) {
   opts.stdio = 'inherit'
   console.log('Run: ', cmd, opts)
@@ -62,13 +66,22 @@ exports.dump = async (dumpKey, name) => {
   }
 }
 
-exports.archive = async (name) => {
+exports.cloudArchive = async (name) => {
   name = name || dateStr(dayjs())
   const files = await fs.readdir(`${absoluteBackupDir}/${name}`)
   for (const file of files) {
     // await exec(`sshpass -f /tmp/ca-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av ${absoluteBackupDir}/${name}/* ${config.cloudArchive.url}/${name}/`)
     await exec(`sshpass -f /tmp/ca-password.txt scp -o StrictHostKeyChecking=no ${absoluteBackupDir}/${name}/${file} ${config.cloudArchive.url}/${name}-${file}`)
   }
+}
+
+exports.rsyncArchive = async (name) => {
+  let dirName = name
+  if (!name) {
+    name = 'latest'
+    dirName = dateStr(dayjs())
+  }
+  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${absoluteBackupDir}/${dirName} ${config.rsync.url}/${name}`)
 }
 
 exports.restore = async (dumpKey, name) => {

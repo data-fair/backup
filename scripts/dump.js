@@ -19,7 +19,11 @@ async function main() {
     }
     if (config.cloudArchive.tenant && moment().day() === 1) {
       console.log('Sync backuped data to cold cloud archive every week')
-      await dumpUtils.archive(process.argv[3])
+      await dumpUtils.cloudArchive(process.argv[3])
+    }
+    if (config.rsync.url && config.rsync.password) {
+      console.log('Sync backuped data to rsync server')
+      await dumpUtils.rsyncArchive(process.argv[3])
     }
     await notifications.send({
       topic: { key: 'backup:success' },
