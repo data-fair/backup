@@ -17,7 +17,7 @@ if (config.cloudArchive.tenant) {
 }
 
 if (config.rsync.password) {
-  fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password
+  fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password)
 }
 
 async function exec(cmd, opts = {}) {
