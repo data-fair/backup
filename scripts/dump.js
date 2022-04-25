@@ -1,12 +1,12 @@
 const fs = require('fs-extra')
 const config = require('config')
-const moment = require('moment')
+const dayjs = require('dayjs')
 const dumpUtils = require('../server/utils/dump')
 const notifications = require('../server/utils/notifications')
 
-const start = moment()
+const start = dayjs()
 
-async function main() {
+async function main () {
   const name = dumpUtils.name(process.argv[3])
   try {
     await dumpUtils.rotate()
@@ -17,7 +17,7 @@ async function main() {
     } else {
       await dumpUtils.dump(process.argv[2], process.argv[3])
     }
-    if (config.cloudArchive.tenant && moment().day() === 1) {
+    if (config.cloudArchive.tenant && dayjs().day() === 1) {
       console.log('Sync backuped data to cold cloud archive every week')
       await dumpUtils.cloudArchive(process.argv[3])
     }

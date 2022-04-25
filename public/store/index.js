@@ -14,7 +14,7 @@ export default () => {
     },
     getters: {},
     mutations: {
-      setAny(state, params) {
+      setAny (state, params) {
         Object.assign(state, params)
       }
     }

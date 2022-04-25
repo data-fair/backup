@@ -20,13 +20,13 @@ if (config.rsync.password) {
   fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password)
 }
 
-async function exec(cmd, opts = {}) {
+async function exec (cmd, opts = {}) {
   opts.stdio = 'inherit'
   console.log('Run: ', cmd, opts)
   return spawn('bash', ['-c', cmd], opts)
 }
 
-async function splitArchive(archive, backupName) {
+async function splitArchive (archive, backupName) {
   await exec(`split -b ${config.splitSize} ${archive.tmpPath} ${archive.name}-`, { cwd: `${absoluteBackupDir}/${backupName}` })
   archive.tmpFile.cleanup()
 }
@@ -105,7 +105,7 @@ exports.restore = async (dumpKey, name) => {
   }
 }
 
-function dateStr(d) {
+function dateStr (d) {
   return d.format().slice(0, 10)
 }
 

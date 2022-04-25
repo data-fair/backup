@@ -8,14 +8,12 @@ const api = require('./api')
 const nuxt = require('./nuxt')
 const { autoTask } = require('../config/default')
 const session = require('@koumoul/sd-express')({
-  publicUrl: config.publicUrl,
-  directoryUrl: config.directoryUrl,
-  cookieDomain: config.sessionDomain
+  directoryUrl: config.directoryUrl
 })
 const debug = require('debug')('main')
 
 const publicHost = new URL(config.publicUrl).host
-debug(`Public host`, publicHost)
+debug('Public host', publicHost)
 
 // Second express application for proxying requests based on host
 const app = express()
@@ -27,13 +25,11 @@ if (process.env.NODE_ENV === 'development') {
   app.use('/notify', proxy({ target: 'http://localhost:8088', pathRewrite: { '^/notify': '' } }))
 }
 
-app.use('/api/v1/session', session.router)
 app.use('/api/v1', session.auth, api)
 
 let httpServer
-async function main() {
+async function main () {
   const nuxtMiddleware = await nuxt()
-  app.use(session.loginCallback)
   app.use(nuxtMiddleware)
   app.use((err, req, res, next) => {
     console.error('Error in HTTP request', err)

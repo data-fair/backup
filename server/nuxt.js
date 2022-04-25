@@ -1,5 +1,3 @@
-const { Nuxt } = require('nuxt')
-
 const nuxtConfig = require('../nuxt.config.js')
 
 module.exports = async () => {
@@ -7,6 +5,7 @@ module.exports = async () => {
     // in dev mode the nuxt dev server is already running, we re-expose it
     return require('http-proxy-middleware')({ target: 'http://localhost:3039' })
   } else {
+    const { Nuxt } = require('nuxt-start')
     // Prepare nuxt for rendering and serving UI
     const nuxt = new Nuxt(nuxtConfig)
     return async (req, res, next) => {

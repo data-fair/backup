@@ -1,6 +1,11 @@
 <template>
   <v-app dark>
-    <v-app-bar app dark scroll-off-screen clipped-right>
+    <v-app-bar
+      app
+      dark
+      scroll-off-screen
+      clipped-right
+    >
       <v-toolbar-title class="ml-3">
         <h1 class="headline">
           Sauvegardes
@@ -11,28 +16,51 @@
 
       <!-- larger screens: navigation in toolbar -->
       <v-toolbar-items>
-        <v-btn to="/" text color="primary" exact>
+        <v-btn
+          to="/"
+          text
+          color="primary"
+          exact
+        >
           Accueil
         </v-btn>
 
         <!-- Account specific menu -->
         <template v-if="session.initialized">
-          <v-btn v-if="!user || !user.adminMode" color="primary" @click="setAdminMode">
+          <v-btn
+            v-if="!user || !user.adminMode"
+            color="primary"
+            @click="setAdminMode(true)"
+          >
             Se connecter / S'inscrire
           </v-btn>
-          <v-menu v-else offset-y left>
-            <template v-slot:activator="{on}">
-              <v-btn text v-on="on">
+          <v-menu
+            v-else
+            offset-y
+            left
+          >
+            <template #activator="{on}">
+              <v-btn
+                text
+                v-on="on"
+              >
                 {{ user.name }} ({{ user.organization ? user.organization.name : 'compte personnel' }})
               </v-btn>
             </template>
             <v-list>
               <template v-if="user.organizations && user.organizations.length">
                 <v-subheader>Changer de compte</v-subheader>
-                <v-list-tile v-if="user.organization" @click="switchOrganization()">
+                <v-list-tile
+                  v-if="user.organization"
+                  @click="switchOrganization()"
+                >
                   <v-list-tile-title>Compte personnel</v-list-tile-title>
                 </v-list-tile>
-                <v-list-tile v-for="organization in user.organizations.filter(o => !user.organization || (user.organization.id !== o.id))" :key="organization.id" @click="switchOrganization(organization.id)">
+                <v-list-tile
+                  v-for="organization in user.organizations.filter(o => !user.organization || (user.organization.id !== o.id))"
+                  :key="organization.id"
+                  @click="switchOrganization(organization.id)"
+                >
                   <v-list-tile-title>Organisation {{ organization.name }}</v-list-tile-title>
                 </v-list-tile>
                 <v-divider />
@@ -45,21 +73,36 @@
         </template>
       </v-toolbar-items>
     </v-app-bar>
-    <v-content v-if="user && user.adminMode">
+    <v-main v-if="user && user.adminMode">
       <nuxt />
 
-      <v-snackbar v-if="notification" ref="notificationSnackbar" v-model="showSnackbar" :color="notification.type" :timeout="notification.type === 'error' ? 0 : 6000" class="notification" bottom>
+      <v-snackbar
+        v-if="notification"
+        ref="notificationSnackbar"
+        v-model="showSnackbar"
+        :color="notification.type"
+        :timeout="notification.type === 'error' ? 0 : 6000"
+        class="notification"
+        bottom
+      >
         <div style="max-width: 85%;">
           <p>{{ notification.msg }}</p>
-          <p v-if="notification.errorMsg" class="ml-3">
+          <p
+            v-if="notification.errorMsg"
+            class="ml-3"
+          >
             {{ notification.errorMsg }}
           </p>
         </div>
-        <v-btn text icon @click.native="showSnackbar = false">
+        <v-btn
+          text
+          icon
+          @click.native="showSnackbar = false"
+        >
           <v-icon>close</v-icon>
         </v-btn>
       </v-snackbar>
-    </v-content>
+    </v-main>
     <v-footer class="pa-3">
       <v-spacer />
       <div>Powered by <a href="https://koumoul.com">Koumoul</a></div>
@@ -72,7 +115,7 @@ import eventBus from '../event-bus'
 const { mapState, mapActions } = require('vuex')
 
 export default {
-  data() {
+  data () {
     return {
       notification: null,
       showSnackbar: false
@@ -80,17 +123,17 @@ export default {
   },
   computed: {
     ...mapState(['env']),
-    session() {
+    session () {
       return this.$store.state.session
     },
-    user() {
+    user () {
       return this.session.user
     },
-    routePrefix() {
+    routePrefix () {
       return this.$route && this.$route.name && this.$route.name.split('-')[0]
     }
   },
-  mounted() {
+  mounted () {
     eventBus.$on('notification', async notif => {
       this.showSnackbar = false
       await this.$nextTick()

@@ -1,11 +1,11 @@
 const config = require('config')
-const moment = require('moment')
+const dayjs = require('dayjs')
 const dumpUtils = require('../server/utils/dump')
 const notifications = require('../server/utils/notifications')
 
-const start = moment()
+const start = dayjs()
 
-async function main() {
+async function main () {
   try {
     await dumpUtils.restore(process.argv[2], process.argv[3])
     await notifications.send({

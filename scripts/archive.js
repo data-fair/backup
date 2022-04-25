@@ -1,6 +1,6 @@
 const dumpUtils = require('../server/utils/dump')
 
-async function main() {
+async function main () {
   await dumpUtils.archive(process.argv[2])
 }
 

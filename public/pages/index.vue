@@ -1,20 +1,41 @@
 <template>
   <v-container fluid>
-    <v-navigation-drawer app clipped right light>
+    <v-navigation-drawer
+      app
+      clipped
+      right
+      light
+    >
       <v-iframe
-        aspect-ratio="4"
+        :aspect-ratio="4"
         :src="`${env.notifyUrl}/embed/subscribe?key=backup:success,backup:failure&title=Succès,Échec&noSender=true`"
         class="pt-4"
       />
     </v-navigation-drawer>
     <v-layout column>
-      <v-layout row wrap class="px-4">
-        <v-treeview v-if="directories" item-key="path" :items="directories" :open-on-click="true" dense shaped>
-          <template v-slot:label="{item}">
+      <v-layout
+        row
+        wrap
+        class="px-4"
+      >
+        <v-treeview
+          v-if="directories"
+          item-key="path"
+          :items="directories"
+          :open-on-click="true"
+          dense
+          shaped
+        >
+          <template #label="{item}">
             {{ item.path }}<span v-if="item.size"> ({{ item.size }})</span>
           </template>
-          <template v-slot:append="{item}">
-            <v-btn v-if="!item.children" icon color="primary" :href="env.publicUrl + '/api/v1/directories' + item.path">
+          <template #append="{item}">
+            <v-btn
+              v-if="!item.children"
+              icon
+              color="primary"
+              :href="env.publicUrl + '/api/v1/directories' + item.path"
+            >
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </template>
@@ -38,7 +59,7 @@ export default {
     ...mapState(['env'])
   },
   watch: {},
-  async created() {
+  async created () {
     this.directories = await this.$axios.$get('api/v1/directories')
   },
   methods: {}

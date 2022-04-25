@@ -1,7 +1,7 @@
 version: '3'
 services:
   sd:
-    image: koumoul/simple-directory:2
+    image: ghcr.io/data-fair/simple-directory:master
     ports:
       - 8080:8080
       - 1080:1080
@@ -12,12 +12,12 @@ services:
       - STORAGE_TYPE=mongo
 
   mongo:
-    image: mongo:4.1
+    image: mongo:4.2
     ports:
       - 27017:27017
 
   notify:
-    image: koumoul/notify:master
+    image: ghcr.io/data-fair/notify:master
     network_mode: host
     environment:
       - PORT=8088
