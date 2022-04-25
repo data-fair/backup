@@ -25,16 +25,17 @@ for (const serveDir of serveDirs) {
       const childrenNames = await fs.readdir(fullPath)
       const children = []
       for (const childName of childrenNames) {
+        if (childName === 'lost+found') continue
         const childStats = await fs.stat(path.join(fullPath, childName))
         const childPath = path.join(serveDir.name, req.params[0], childName)
         if (childStats.isDirectory()) children.push({ name: childName, path: childPath, children: [] })
         else children.push({ name: childName, path: childPath, size: prettyBytes(childStats.size) })
-        children.sort((c1, c2) => {
-          if (c1.children && !c2.children) return -1
-          if (c2.children && !c1.children) return 1
-          return 0
-        })
       }
+      children.sort((c1, c2) => {
+        if (c1.children && !c2.children) return -1
+        if (c2.children && !c1.children) return 1
+        return 0
+      })
       res.send(children)
     } else {
       res.download(fullPath)
