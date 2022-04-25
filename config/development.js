@@ -8,5 +8,6 @@ module.exports = {
   splitSize: '100',
   autoTask: {
     cron: '* * * * *'
-  }
+  },
+  serveExtraDirs: [{ name: 'public', path: 'public' }]
 }

@@ -1,8 +1,7 @@
 const config = require('config')
 const express = require('express')
-const klaw = require('klaw')
+const path = require('path')
 const fs = require('fs-extra')
-const eventToPromise = require('event-to-promise')
 const prettyBytes = require('pretty-bytes')
 const asyncWrap = require('./utils/async-wrap')
 
@@ -13,25 +12,32 @@ api.use((req, res, next) => {
   next()
 })
 
-api.get('/directories', asyncWrap(async(req, res) => {
-  await fs.ensureDir(config.backupDir)
-  const klawStream = klaw(config.backupDir, { queueMethod: 'pop' })
-  let rootDir, currentDir
-  const dirs = []
-  klawStream.on('data', item => {
-    if (item.stats.isDirectory()) {
-      if (rootDir) {
-        currentDir = { path: item.path.replace(rootDir, ''), children: [] }
-        dirs.push(currentDir)
-      } else {
-        rootDir = item.path
-      }
-    } else {
-      currentDir.children.push({ path: item.path.replace(rootDir, ''), size: prettyBytes(item.stats.size) })
-    }
-  })
-  await eventToPromise(klawStream, 'end')
-  res.send(dirs)
-}))
+const serveDirs = [{ name: 'backup', path: config.backupDir }, ...config.serveExtraDirs]
 
-api.use('/directories/', express.static(config.backupDir))
+api.get('/directories', (req, res) => {
+  res.send(serveDirs.map(serveDir => ({ path: serveDir.name, children: [] })))
+})
+for (const serveDir of serveDirs) {
+  api.get(`/directories/${serveDir.name}/*`, asyncWrap(async (req, res) => {
+    const fullPath = path.join(serveDir.path, req.params[0])
+    const stats = await fs.stat(fullPath)
+    if (stats.isDirectory()) {
+      const childrenNames = await fs.readdir(fullPath)
+      const children = []
+      for (const childName of childrenNames) {
+        const childStats = await fs.stat(path.join(fullPath, childName))
+        const childPath = path.join(serveDir.name, req.params[0], childName)
+        if (childStats.isDirectory()) children.push({ name: childName, path: childPath, children: [] })
+        else children.push({ name: childName, path: childPath, size: prettyBytes(childStats.size) })
+        children.sort((c1, c2) => {
+          if (c1.children && !c2.children) return -1
+          if (c2.children && !c1.children) return 1
+          return 0
+        })
+      }
+      res.send(children)
+    } else {
+      res.download(fullPath)
+    }
+  }))
+}

@@ -22,19 +22,19 @@
           v-if="directories"
           item-key="path"
           :items="directories"
-          :open-on-click="true"
           dense
           shaped
+          :load-children="fetchChildren"
         >
           <template #label="{item}">
-            {{ item.path }}<span v-if="item.size"> ({{ item.size }})</span>
+            {{ item.name || item.path }}<span v-if="item.size"> ({{ item.size }})</span>
           </template>
           <template #append="{item}">
             <v-btn
               v-if="!item.children"
               icon
               color="primary"
-              :href="env.publicUrl + '/api/v1/directories' + item.path"
+              :href="env.publicUrl + '/api/v1/directories/' + item.path"
             >
               <v-icon>mdi-download</v-icon>
             </v-btn>
@@ -60,8 +60,12 @@ export default {
   },
   watch: {},
   async created () {
-    this.directories = await this.$axios.$get('api/v1/directories')
+    this.directories = await this.$axios.$get('api/v1/directories/')
   },
-  methods: {}
+  methods: {
+    async fetchChildren (item) {
+      item.children = await this.$axios.$get(`api/v1/directories/${item.path}/`)
+    }
+  }
 }
 </script>

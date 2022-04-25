@@ -58,5 +58,9 @@ module.exports = {
   autoTask: {
     exec: 'AUTO_TASK_EXEC',
     cron: 'AUTO_TASK_CRON'
+  },
+  serveExtraDirs: {
+    __name: 'SERVE_EXTRA_DIRS',
+    __format: 'json'
   }
 }

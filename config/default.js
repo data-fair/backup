@@ -12,7 +12,7 @@ module.exports = {
     ignoreDBs: ['admin', 'config', 'local'],
     dumpParams: {}
   },
-  backupDir: `data/backup`,
+  backupDir: 'data/backup',
   dumpKeys: [
     'dir:portals-manager:/data/portals-manager',
     'dir:data-fair:/data/data-fair',
@@ -45,5 +45,6 @@ module.exports = {
     exec: 'node scripts/dump.js all',
     // 1am every day ? '0 1 * * *'
     cron: null
-  }
+  },
+  serveExtraDirs: [] // [{"name": "archives", "path": "/data/archives"}]
 }
