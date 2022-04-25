@@ -7,7 +7,7 @@ const isBuilding = process.argv.slice(-1)[0] === 'build'
 if (process.env.NODE_ENV === 'production') {
   const nuxtConfigInject = require('@koumoul/nuxt-config-inject')
   if (isBuilding) config = nuxtConfigInject.prepare(config)
-  else nuxtConfigInject.replace(config)
+  else nuxtConfigInject.replace(config, ['nuxt-dist/**/*'])
 }
 
 module.exports = {
