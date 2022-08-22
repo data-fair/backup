@@ -75,13 +75,19 @@ exports.cloudArchive = async (name) => {
   }
 }
 
-exports.rsyncArchive = async (name) => {
-  let dirName = name
-  if (!name) {
-    name = 'latest'
-    dirName = dateStr(dayjs())
+exports.rsyncArchive = async (rsyncKey) => {
+  let source, target
+  if (rsyncKey === 'latest-dump') {
+    source = `${absoluteBackupDir}/${dateStr(dayjs())}/*`
+    target = `${config.rsync.url}/latest`
+  } else if (rsyncKey.startsWith('dir:')) {
+    const [archiveName, dirPath] = rsyncKey.split(':').slice(1)
+    source = `${dirPath}/*`
+    target = `${config.rsync.url}/${archiveName}`
+  } else {
+    throw new Error(`Unknown rsync key "${rsyncKey}"`)
   }
-  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${absoluteBackupDir}/${dirName}/* ${config.rsync.url}/${name}`)
+  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${source} ${target}`)
 }
 
 exports.restore = async (dumpKey, name) => {

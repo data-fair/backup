@@ -14,16 +14,17 @@ async function main () {
       for (const dumpKey of config.dumpKeys) {
         await dumpUtils.dump(dumpKey)
       }
+      if (config.rsync.url && config.rsync.password) {
+        for (const rsyncKey of config.rsyncKeys) {
+          await dumpUtils.rsyncArchive(rsyncKey)
+        }
+      }
+      if (config.cloudArchive.tenant && dayjs().day() === 1) {
+        console.log('Sync backuped data to cold cloud archive every week')
+        await dumpUtils.cloudArchive(process.argv[3])
+      }
     } else {
       await dumpUtils.dump(process.argv[2], process.argv[3])
-    }
-    if (config.cloudArchive.tenant && dayjs().day() === 1) {
-      console.log('Sync backuped data to cold cloud archive every week')
-      await dumpUtils.cloudArchive(process.argv[3])
-    }
-    if (config.rsync.url && config.rsync.password) {
-      console.log('Sync backuped data to rsync server')
-      await dumpUtils.rsyncArchive(process.argv[3])
     }
     await notifications.send({
       topic: { key: 'backup:success' },

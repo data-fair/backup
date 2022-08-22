@@ -14,9 +14,14 @@ module.exports = {
   },
   backupDir: 'data/backup',
   dumpKeys: [
-    'dir:portals-manager:/data/portals-manager',
-    'dir:data-fair:/data/data-fair',
+    // 'dir:portals-manager:/data/portals-manager',
+    // 'dir:data-fair:/data/data-fair',
     'mongo'
+  ],
+  rsyncKeys: [
+    // 'dir:portals-manager:/data/portals-manager',
+    // 'dir:data-fair:/data/data-fair',
+    'latest-dump'
   ],
   // OVH cloud archive backend for cold archiving
   cloudArchive: {
