@@ -19,6 +19,10 @@ module.exports = {
     __name: 'DUMP_KEYS',
     __format: 'json'
   },
+  rsyncKeys: {
+    __name: 'RSYNC_KEYS',
+    __format: 'json'
+  },
   cloudArchive: {
     url: 'CA_URL',
     tenant: 'CA_TENANT',
