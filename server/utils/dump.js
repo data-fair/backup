@@ -78,11 +78,11 @@ exports.cloudArchive = async (name) => {
 exports.rsyncArchive = async (rsyncKey) => {
   let source, target
   if (rsyncKey === 'latest-dump') {
-    source = `${absoluteBackupDir}/${dateStr(dayjs())}`
+    source = `${absoluteBackupDir}/${dateStr(dayjs())}/`
     target = 'latest'
   } else if (rsyncKey.startsWith('dir:')) {
     const [archiveName, dirPath] = rsyncKey.split(':').slice(1)
-    source = `${dirPath}`
+    source = `${dirPath}/`
     target = archiveName
   } else {
     throw new Error(`Unknown rsync key "${rsyncKey}"`)
