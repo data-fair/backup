@@ -79,7 +79,7 @@ exports.rsyncArchive = async (rsyncKey) => {
   let source, target
   if (rsyncKey === 'latest-dump') {
     source = `${absoluteBackupDir}/${dateStr(dayjs())}/`
-    target = 'latest'
+    target = 'dump'
   } else if (rsyncKey.startsWith('dir:')) {
     const [archiveName, dirPath] = rsyncKey.split(':').slice(1)
     source = `${dirPath}/`
@@ -87,7 +87,10 @@ exports.rsyncArchive = async (rsyncKey) => {
   } else {
     throw new Error(`Unknown rsync key "${rsyncKey}"`)
   }
-  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${source} ${config.rsync.url}/${target}`)
+  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${source} ${config.rsync.url}/latest/${target}`)
+  if (dayjs().day() === 0) {
+    await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${source} ${config.rsync.url}/weekly/${target}`)
+  }
 }
 
 exports.restore = async (dumpKey, name) => {
