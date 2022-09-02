@@ -1,8 +1,13 @@
 const fs = require('fs-extra')
 const config = require('config')
 const dayjs = require('dayjs')
+const localizedFormat = require('dayjs/plugin/localizedFormat')
 const dumpUtils = require('../server/utils/dump')
 const notifications = require('../server/utils/notifications')
+
+require('dayjs/locale/fr')
+dayjs.locale('fr')
+dayjs.extend(localizedFormat)
 
 const start = dayjs()
 
