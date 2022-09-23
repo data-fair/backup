@@ -80,7 +80,12 @@ async function main () {
         }),
         fs.createWriteStream(outFile)
       )
-      console.log(`exported collection (${i} docs) to file ${outFile}`)
+      if (i === 0) {
+        console.log('remove empty collection file', outFile)
+        await fs.remove(outFile)
+      } else {
+        console.log(`exported collection (${i} docs) to file ${outFile}`)
+      }
     }
     for (const collection of db.collections) {
       if (collection.ownerType && collection.ownerType !== ownerType) continue
