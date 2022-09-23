@@ -119,7 +119,10 @@ async function main () {
       }
     }
     const nbChildren = (await fs.readdir(p)).length
-    if (!nbChildren) continue
+    if (!nbChildren) {
+      console.log('no children in folder, skip it')
+      continue
+    }
     await dumpUtils.exec(`zip ${outFile} -q -r -- *`, { cwd: p })
     console.log(`archived directory (${nbChildren} children) to file ${outFile}`)
   }
