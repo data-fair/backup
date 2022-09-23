@@ -35,7 +35,9 @@ async function main () {
     const exportCollection = async (collection) => {
       console.log('\nexport from mongo', db.db, collection.collection)
       if (!collection.filter) throw new Error('no filter defined')
-      if (!collection.ignoreFilterWarning && !collection.filter.includes('{ownerId}')) throw new Error(`the filter does not include {ownerId} : ${collection.filter}`)
+      if (!collection.ignoreFilterWarning && !collection.filter.includes('{ownerId}')) {
+        throw new Error(`the filter does not include {ownerId} : ${collection.filter}`)
+      }
       if (!(await client.db(db.db).listCollections({ name: collection.collection }).toArray()).length) {
         if (collection.optional) {
           console.log('missing optional collection')
@@ -100,10 +102,19 @@ async function main () {
   for (const dir of [...config.ownerExports.dirs, ...dynamicDirs]) {
     if (!dir.path) throw new Error('no path defined')
     if (!dir.name) throw new Error('no name defined')
-    if (!dir.path.includes('{ownerId}')) throw new Error(`the path does not include {ownerId} : ${dir.path}`)
+    if (!dir.ignorePathWarning && !dir.path.includes('{ownerId}')) {
+      throw new Error(`the path does not include {ownerId} : ${dir.path}`)
+    }
     console.log('\nexport from directory', dir.name)
     const p = ownerTmpl(dir.path)
     const outFile = path.join(tmpDir, 'dirs', dir.name + '.zip')
+    if (!(await fs.pathExists(p))) {
+      if (dir.optional) {
+        console.log('missing optional dir')
+      } else {
+        throw new Error('collection not found')
+      }
+    }
     await dumpUtils.exec(`zip ${outFile} -q -r -- *`, { cwd: p })
   }
 
