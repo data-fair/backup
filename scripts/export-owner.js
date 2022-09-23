@@ -41,6 +41,7 @@ async function main () {
       if (!(await client.db(db.db).listCollections({ name: collection.collection }).toArray()).length) {
         if (collection.optional) {
           console.log('missing optional collection')
+          return
         } else {
           throw new Error('collection not found')
         }
@@ -111,6 +112,7 @@ async function main () {
     if (!(await fs.pathExists(p))) {
       if (dir.optional) {
         console.log('missing optional dir')
+        continue
       } else {
         throw new Error('collection not found')
       }
