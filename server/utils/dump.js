@@ -25,6 +25,7 @@ async function exec (cmd, opts = {}) {
   console.log('Run: ', cmd, opts)
   return spawn('bash', ['-c', cmd], opts)
 }
+exports.exec = exec
 
 async function splitArchive (archive, backupName) {
   await exec(`split -b ${config.splitSize} ${archive.tmpPath} ${archive.name}-`, { cwd: `${absoluteBackupDir}/${backupName}` })

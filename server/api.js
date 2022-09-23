@@ -7,18 +7,18 @@ const asyncWrap = require('./utils/async-wrap')
 
 const api = module.exports = express.Router()
 
-api.use((req, res, next) => {
-  if (!req.user || !req.user.adminMode) return res.status(401).send()
-  next()
-})
-
 const serveDirs = [{ name: 'backup', path: config.backupDir }, ...config.serveExtraDirs]
+if (config.ownerExports && config.ownerExports.dir) {
+  serveDirs.push({ name: 'owner-exports', path: config.ownerExports.dir })
+}
 
 api.get('/directories', (req, res) => {
+  if (!req.user || !req.user.adminMode) return res.status(401).send()
   res.send(serveDirs.map(serveDir => ({ path: serveDir.name, children: [] })))
 })
 for (const serveDir of serveDirs) {
   api.get(`/directories/${serveDir.name}/*`, asyncWrap(async (req, res) => {
+    if (!req.user || !req.user.adminMode) return res.status(401).send()
     const fullPath = path.join(serveDir.path, req.params[0])
     const stats = await fs.stat(fullPath)
     if (stats.isDirectory()) {
@@ -41,4 +41,18 @@ for (const serveDir of serveDirs) {
       res.download(fullPath)
     }
   }))
+}
+
+if (config.ownerExports && config.ownerExports.dir) {
+  api.get('/owner-exports/:type/:id/:archive', (req, res) => {
+    if (!req.user) return res.status(401).send()
+    if (req.user.adminMode) {
+      // ok
+    } else if (req.user.activeAccountRole === 'admin' && req.user.activeAccount.type === req.params.type && req.user.activeAccount.id === req.params.id) {
+      // ok
+    } else {
+      return res.status(401).send()
+    }
+    res.download(path.join(config.ownerExports.dir, req.params.type, req.params.id, req.params.archive))
+  })
 }

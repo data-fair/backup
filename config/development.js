@@ -9,5 +9,37 @@ module.exports = {
   autoTask: {
     cron: '* * * * *'
   },
-  serveExtraDirs: [{ name: 'public', path: 'public' }]
+  serveExtraDirs: [{ name: 'public', path: 'public' }],
+  dumpKeys: [
+    'dir:test:./test',
+    'mongo'
+  ],
+  ownerExports: {
+    dir: 'data/owner-exports',
+    mongo: {
+      dbs: [{
+        db: 'simple-directory-production',
+        collections: [{
+          collection: 'organizations',
+          filter: '{"_id": "{ownerId}"}',
+          project: '{}',
+          ownerType: 'organization'
+        }, {
+          collection: 'users',
+          filter: '{"organizations.id": "{ownerId}"}',
+          project: '{"password": 0, "organizations": {"$elemMatch": {"id": "{ownerId}"}}}',
+          ownerType: 'organization'
+        }, {
+          collection: 'users',
+          filter: '{"_id": "{ownerId}"}',
+          project: '{"password": 0, "organizations": {"$elemMatch": {"id": "emptyOrgsArray"}}}',
+          ownerType: 'user'
+        }]
+      }]
+    },
+    dirs: [{
+      name: 'test',
+      path: './test/{ownerType}/{ownerId}'
+    }]
+  }
 }

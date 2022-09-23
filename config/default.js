@@ -23,6 +23,7 @@ module.exports = {
     // 'dir:data-fair:/data/data-fair',
     'latest-dump'
   ],
+  ownerExports: null,
   // OVH cloud archive backend for cold archiving
   cloudArchive: {
     url: 'pca@gateways.storage.sbg.cloud.ovh.net:backup',

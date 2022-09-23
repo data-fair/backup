@@ -23,6 +23,10 @@ module.exports = {
     __name: 'RSYNC_KEYS',
     __format: 'json'
   },
+  ownerExports: {
+    __name: 'OWNER_EXPORTS',
+    __format: 'json'
+  },
   cloudArchive: {
     url: 'CA_URL',
     tenant: 'CA_TENANT',
