@@ -54,7 +54,7 @@ async function main () {
       const outFile = path.join(tmpDir, 'mongo', `${db.db}-${collection.collection}.ndjson`)
       let i = 0
       await pipeline(
-        client.db(db.db).collection(collection.collection).find(filter, project).stream(),
+        client.db(db.db).collection(collection.collection).find(filter).project(project).stream(),
         new Transform({
           objectMode: true,
           transform (chunk, encoding, callback) {
