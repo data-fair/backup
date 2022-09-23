@@ -79,6 +79,7 @@
     "mongodb": "^4.5.0",
     "node-cron": "^3.0.0",
     "nodemon": "^1.19.1",
+    "nanoid": "^3.1.22",
     "nuxt-start": "^2.15.8",
     "semver-extract": "^1.1.1",
     "tmp-promise": "^2.0.2"

@@ -3,6 +3,7 @@ const config = require('config')
 const path = require('path')
 const axios = require('axios')
 const tmp = require('tmp-promise')
+const { nanoid } = require('nanoid')
 const { pipeline } = require('node:stream/promises')
 const { Transform } = require('node:stream')
 const { MongoClient } = require('mongodb')
@@ -27,7 +28,7 @@ async function main () {
   const outputDir = path.join(config.ownerExports.dir, ownerType, ownerId)
   await fs.ensureDir(outputDir)
 
-  const client = await MongoClient.connect(`mongodb://${config.mongo.host}:${config.mongo.port}`, { useNewUrlParser: true })
+  const client = await MongoClient.connect(`mongodb://${config.mongo.host}:${config.mongo.port}?readPreference=${config.mongo.readPreference}`, { useNewUrlParser: true })
   await fs.ensureDir(path.join(tmpDir, 'mongo'))
   const dynamicDirs = []
   for (const db of config.ownerExports.mongo.dbs) {
@@ -120,7 +121,7 @@ async function main () {
     await dumpUtils.exec(`zip ${outFile} -q -r -- *`, { cwd: p })
   }
 
-  const outputFile = new Date().toISOString().slice(0, 10) + '.zip'
+  const outputFile = `${new Date().toISOString().slice(0, 10)}-${nanoid()}.zip`
   const outputArchive = path.resolve(path.join(outputDir, outputFile))
   console.log('\nprepare final zip archive')
   await dumpUtils.exec(`zip ${outputArchive} -q -r -- *`, { cwd: tmpDir })
