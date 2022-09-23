@@ -29,6 +29,7 @@ async function main () {
 
   const client = await MongoClient.connect(`mongodb://${config.mongo.host}:${config.mongo.port}`, { useNewUrlParser: true })
   await fs.ensureDir(path.join(tmpDir, 'mongo'))
+  const dynamicDirs = []
   for (const db of config.ownerExports.mongo.dbs) {
     const dynamicCollections = []
     const exportCollection = async (collection) => {
@@ -61,6 +62,15 @@ async function main () {
               }
               dynamicCollections.push({ ...linkedCollection, collection: resolvedCollectionName })
             }
+            for (const linkedDir of collection.linkedDirs || []) {
+              let resolvedDirPath = linkedDir.path
+              let resolvedDirName = linkedDir.name
+              for (const key in chunk) {
+                resolvedDirPath = resolvedDirPath.replace(`{${key}}`, chunk[key])
+                resolvedDirName = resolvedDirName.replace(`{${key}}`, chunk[key])
+              }
+              dynamicDirs.push({ ...linkedDir, path: resolvedDirPath, name: resolvedDirName })
+            }
             callback(null, JSON.stringify(chunk) + '\n')
           }
         }),
@@ -84,7 +94,10 @@ async function main () {
   await client.close()
 
   await fs.ensureDir(path.join(tmpDir, 'dirs'))
-  for (const dir of config.ownerExports.dirs) {
+  if (dynamicDirs.length) {
+    console.log('found additional dynamically named dirs to export', dynamicDirs.length)
+  }
+  for (const dir of [...config.ownerExports.dirs, ...dynamicDirs]) {
     if (!dir.path) throw new Error('no path defined')
     if (!dir.name) throw new Error('no name defined')
     if (!dir.path.includes('{ownerId}')) throw new Error(`the path does not include {ownerId} : ${dir.path}`)
