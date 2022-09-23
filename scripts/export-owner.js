@@ -35,7 +35,7 @@ async function main () {
     const exportCollection = async (collection) => {
       console.log('\nexport from mongo', db.db, collection.collection)
       if (!collection.filter) throw new Error('no filter defined')
-      if (!collection.ownerRestricted && !collection.filter.includes('{ownerId}')) throw new Error(`the filter does not include {ownerId} : ${collection.filter}`)
+      if (!collection.ignoreFilterWarning && !collection.filter.includes('{ownerId}')) throw new Error(`the filter does not include {ownerId} : ${collection.filter}`)
       if (!(await client.db(db.db).listCollections({ name: collection.collection }).toArray()).length) {
         if (collection.optional) {
           console.log('missing optional collection')

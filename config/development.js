@@ -43,12 +43,12 @@ module.exports = {
           linkedCollections: [{
             collection: 'dataset-data-{id}',
             filter: '{}',
-            ownerRestricted: true,
+            ignoreFilterWarning: true,
             optional: true
           }, {
             collection: 'dataset-revisions-{id}',
             filter: '{}',
-            ownerRestricted: true,
+            ignoreFilterWarning: true,
             optional: true
           }]
         }]
