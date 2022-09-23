@@ -118,7 +118,10 @@ async function main () {
         throw new Error('collection not found')
       }
     }
+    const nbChildren = (await fs.readdir(p)).length
+    if (!nbChildren) continue
     await dumpUtils.exec(`zip ${outFile} -q -r -- *`, { cwd: p })
+    console.log(`archived directory (${nbChildren} children) to file ${outFile}`)
   }
 
   const outputFile = `${new Date().toISOString().slice(0, 10)}-${nanoid()}.zip`
