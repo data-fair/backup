@@ -22,7 +22,6 @@ module.exports = {
         collections: [{
           collection: 'organizations',
           filter: '{"_id": "{ownerId}"}',
-          project: '{}',
           ownerType: 'organization'
         }, {
           collection: 'users',
@@ -34,6 +33,24 @@ module.exports = {
           filter: '{"_id": "{ownerId}"}',
           project: '{"password": 0, "organizations": {"$elemMatch": {"id": "emptyOrgsArray"}}}',
           ownerType: 'user'
+        }]
+      }, {
+        db: 'data-fair',
+        collections: [{
+          collection: 'datasets',
+          filter: '{"owner.type": "{ownerType}", "owner.id": "{ownerId}"}',
+          project: '{"_id": 0}',
+          linkedCollections: [{
+            collection: 'dataset-data-{id}',
+            filter: '{}',
+            ownerRestricted: true,
+            optional: true
+          }, {
+            collection: 'dataset-revisions-{id}',
+            filter: '{}',
+            ownerRestricted: true,
+            optional: true
+          }]
         }]
       }]
     },

@@ -11,6 +11,25 @@ services:
       - MAILDEV_ACTIVE=true
       - STORAGE_TYPE=mongo
 
+  data-fair:
+    image: ghcr.io/data-fair/data-fair:master
+    restart: on-failure:10
+    network_mode: host
+    environment:
+      - PORT=5601
+      - MONGO_URL=mongodb://localhost:27017/data-fair
+      - DIRECTORY_URL=http://localhost:5600/simple-directory
+      - PUBLIC_URL=http://localhost:5600/data-fair
+      - WS_PUBLIC_URL=ws://localhost:5600/data-fair
+      - PROMETHEUS_ACTIVE=false
+
+  elasticsearch:
+    image: ghcr.io/data-fair/elasticsearch:7.17.1
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+
   mongo:
     image: mongo:4.2
     ports:

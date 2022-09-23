@@ -23,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
   // Create a mono-domain environment with other services in dev
   app.use('/simple-directory', proxy({ target: 'http://localhost:8080', pathRewrite: { '^/simple-directory': '' } }))
   app.use('/notify', proxy({ target: 'http://localhost:8088', pathRewrite: { '^/notify': '' } }))
+  app.use('/data-fair', proxy({ target: 'http://localhost:5601', pathRewrite: { '^/data-fair': '' } }))
 }
 
 app.use('/api/v1', session.auth, api)
