@@ -12,6 +12,14 @@ if (config.ownerExports && config.ownerExports.dir) {
   serveDirs.push({ name: 'owner-exports', path: config.ownerExports.dir })
 }
 
+const getOwnerRole = (owner, user) => {
+  if (!user) return null
+  if (user.activeAccount.department) return null
+  if (user.activeAccount.type !== owner.type || user.activeAccount.id !== owner.id) return null
+  if (user.activeAccount.type === 'user') return 'admin'
+  return user.activeAccount.role
+}
+
 api.get('/directories', (req, res) => {
   if (!req.user || !req.user.adminMode) return res.status(401).send()
   res.send(serveDirs.map(serveDir => ({ path: serveDir.name, children: [] })))
@@ -46,12 +54,9 @@ for (const serveDir of serveDirs) {
 if (config.ownerExports && config.ownerExports.dir) {
   api.get('/owner-exports/:type/:id/:archive', (req, res) => {
     if (!req.user) return res.status(401).send()
-    if (req.user.adminMode) {
-      // ok
-    } else if (req.user.activeAccountRole === 'admin' && req.user.activeAccount.type === req.params.type && req.user.activeAccount.id === req.params.id) {
-      // ok
-    } else {
-      return res.status(401).send()
+    if (!req.user.adminMode && getOwnerRole(req.params, req.user) !== 'admin') {
+      console.warn('lack permission to download owner export', req.params, req.activeAccount)
+      return res.status(403).send()
     }
     res.download(path.join(config.ownerExports.dir, req.params.type, req.params.id, req.params.archive))
   })
