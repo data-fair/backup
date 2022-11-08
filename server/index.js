@@ -8,7 +8,8 @@ const api = require('./api')
 const nuxt = require('./nuxt')
 const { autoTask } = require('../config/default')
 const session = require('@koumoul/sd-express')({
-  directoryUrl: config.directoryUrl
+  directoryUrl: config.directoryUrl,
+  privateDirectoryUrl: config.privateDirectoryUrl
 })
 const debug = require('debug')('main')
 

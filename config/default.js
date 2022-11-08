@@ -3,6 +3,7 @@ module.exports = {
   sessionDomain: null,
   publicUrl: 'http://localhost:5600',
   directoryUrl: 'http://localhost:5600/simple-directory',
+  privateDirectoryUrl: null,
   notifyUrl: 'http://localhost:5600/notify',
   mongo: {
     host: 'localhost',

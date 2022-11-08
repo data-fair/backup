@@ -2,6 +2,7 @@ module.exports = {
   publicUrl: 'PUBLIC_URL',
   sessionDomain: 'SESSION_DOMAIN',
   directoryUrl: 'DIRECTORY_URL',
+  privateDirectoryUrl: 'PRIVATE_DIRECTORY_URL',
   notifyUrl: 'NOTIFY_URL',
   mongo: {
     host: 'MONGO_HOST',
