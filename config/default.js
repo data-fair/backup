@@ -5,6 +5,7 @@ module.exports = {
   directoryUrl: 'http://localhost:5600/simple-directory',
   privateDirectoryUrl: null,
   notifyUrl: 'http://localhost:5600/notify',
+  privateNotifyUrl: null,
   mongo: {
     host: 'localhost',
     port: 27017,

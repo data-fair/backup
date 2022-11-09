@@ -4,6 +4,7 @@ module.exports = {
   directoryUrl: 'DIRECTORY_URL',
   privateDirectoryUrl: 'PRIVATE_DIRECTORY_URL',
   notifyUrl: 'NOTIFY_URL',
+  privateNotifyUrl: 'PRIVATE_NOTIFY_URL',
   mongo: {
     host: 'MONGO_HOST',
     readPreference: 'MONGO_READ_PREFERENCE',
