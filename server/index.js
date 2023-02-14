@@ -1,12 +1,10 @@
 const config = require('config')
 const express = require('express')
 const http = require('http')
-const { URL } = require('url')
 const event2promise = require('event-to-promise')
 const { spawn } = require('child_process')
 const api = require('./api')
 const nuxt = require('./nuxt')
-const { autoTask } = require('../config/default')
 const session = require('@koumoul/sd-express')({
   directoryUrl: config.directoryUrl,
   privateDirectoryUrl: config.privateDirectoryUrl
@@ -55,7 +53,7 @@ if (config.autoTask && config.autoTask.cron) {
   cron.schedule(config.autoTask.cron, async () => {
     try {
       console.info(`\nrunning automated task "${config.autoTask.exec}"\n`)
-      await event2promise(spawn(autoTask.exec, { shell: true, stdio: 'inherit' }), 'close')
+      await event2promise(spawn(config.autoTask.exec, { shell: true, stdio: 'inherit' }), 'close')
       console.info('\nautomated task done\n')
     } catch (err) {
       console.error('problem while running automated task', err)
