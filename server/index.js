@@ -5,7 +5,7 @@ const event2promise = require('event-to-promise')
 const { spawn } = require('child_process')
 const api = require('./api')
 const nuxt = require('./nuxt')
-const session = require('@koumoul/sd-express')({
+const session = require('@data-fair/sd-express')({
   directoryUrl: config.directoryUrl,
   privateDirectoryUrl: config.privateDirectoryUrl
 })
