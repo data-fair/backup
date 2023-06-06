@@ -19,7 +19,7 @@ async function main () {
       for (const dumpKey of config.dumpKeys) {
         await dumpUtils.dump(dumpKey)
       }
-      if (config.rsync.url && config.rsync.password) {
+      if (config.rsync.url && (config.rsync.password || config.rsync.sshKey)) {
         for (const rsyncKey of config.rsyncKeys) {
           await dumpUtils.rsyncArchive(rsyncKey)
         }
