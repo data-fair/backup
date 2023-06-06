@@ -37,6 +37,7 @@ module.exports = {
   },
   rsync: {
     url: 'RSYNC_URL',
+    port: 'RSYNC_PORT',
     password: 'RSYNC_PASSWORD',
     sshKey: 'RSYNC_SSH_KEY'
   },

@@ -93,6 +93,7 @@ exports.rsyncArchive = async (rsyncKey) => {
   }
   let sshCommand = 'ssh -o StrictHostKeyChecking=no'
   if (config.rsync.sshKey) sshCommand += ' -i /tmp/rsync-ssh-key'
+  if (config.rsync.port) sshCommand += ' -p ' + config.rsync.port
   let sshPass = ''
   if (config.rsync.password) sshPass = 'sshpass -f /tmp/rsync-password.txt'
   await exec(`${sshPass} rsync -e "${sshCommand}" -av --delete-after ${source} ${config.rsync.url}/latest/${target}`)

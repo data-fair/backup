@@ -35,6 +35,7 @@ module.exports = {
   },
   rsync: {
     url: null,
+    port: null,
     password: null,
     sshKey: null
   },
