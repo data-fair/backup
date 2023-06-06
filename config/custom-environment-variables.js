@@ -37,7 +37,8 @@ module.exports = {
   },
   rsync: {
     url: 'RSYNC_URL',
-    password: 'RSYNC_PASSWORD'
+    password: 'RSYNC_PASSWORD',
+    sshKey: 'RSYNC_SSH_KEY'
   },
   rotation: {
     day: {

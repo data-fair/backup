@@ -35,7 +35,8 @@ module.exports = {
   },
   rsync: {
     url: null,
-    password: null
+    password: null,
+    sshKey: null
   },
   splitSize: '200000000', // 200M
   rotation: {

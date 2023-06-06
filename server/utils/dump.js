@@ -19,6 +19,9 @@ if (config.cloudArchive.tenant) {
 if (config.rsync.password) {
   fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password)
 }
+if (config.rsync.sshKey) {
+  fs.writeFileSync('/tmp/rsync-ssh-key', config.rsync.sshKey)
+}
 
 async function exec (cmd, opts = {}) {
   opts.stdio = 'inherit'
@@ -88,9 +91,13 @@ exports.rsyncArchive = async (rsyncKey) => {
   } else {
     throw new Error(`Unknown rsync key "${rsyncKey}"`)
   }
-  await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${source} ${config.rsync.url}/latest/${target}`)
+  let sshCommand = 'ssh -o StrictHostKeyChecking=no'
+  if (config.rsync.sshKey) sshCommand += ' -i /tmp/rsync-ssh-key'
+  let sshPass = ''
+  if (config.rsync.password) sshPass = 'sshpass -f /tmp/rsync-password.txt'
+  await exec(`${sshPass} rsync -e "${sshCommand}" -av --delete-after ${source} ${config.rsync.url}/latest/${target}`)
   if (dayjs().day() === 0) {
-    await exec(`sshpass -f /tmp/rsync-password.txt rsync -e "ssh -o StrictHostKeyChecking=no" -av --delete-after ${source} ${config.rsync.url}/weekly/${target}`)
+    await exec(`${sshPass} rsync -e "${sshCommand}" -av --delete-after ${source} ${config.rsync.url}/weekly/${target}`)
   }
 }
 
