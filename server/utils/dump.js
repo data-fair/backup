@@ -18,9 +18,11 @@ if (config.cloudArchive.tenant) {
 
 if (config.rsync.password) {
   fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password)
+  fs.chmodSync('/tmp/rsync-password.txt', '0600')
 }
 if (config.rsync.sshKey) {
   fs.writeFileSync('/tmp/rsync-ssh-key', config.rsync.sshKey)
+  fs.chmodSync('/tmp/rsync-ssh-key', '0600')
 }
 
 async function exec (cmd, opts = {}) {
