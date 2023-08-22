@@ -47,13 +47,14 @@ exports.dump = async (dumpKey, name) => {
   await fs.emptyDir(config.tmpdir)
 
   if (dumpKey === 'mongo') {
-    const client = await MongoClient.connect(`mongodb://${config.mongo.host}:${config.mongo.port}`, { useNewUrlParser: true })
+    const url = config.mongo.url || `mongodb://${config.mongo.host}:${config.mongo.port}`
+    const client = await MongoClient.connect(url, { useNewUrlParser: true })
     const dbs = await client.db('admin').admin().listDatabases()
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
       const tmpFile = await tmp.file({ dir: config.tmpdir })
       const tmpPath = tmpFile.path
-      let cmd = `mongodump --host ${config.mongo.host} --port ${config.mongo.port} --readPreference ${config.mongo.readPreference} --db ${db} --gzip --archive=${tmpPath}`
+      let cmd = `mongodump --uri ${url} --readPreference ${config.mongo.readPreference} --db ${db} --gzip --archive=${tmpPath}`
       if (config.mongo.dumpParams && config.mongo.dumpParams[db]) {
         cmd += ` ${config.mongo.dumpParams[db]}`
       }

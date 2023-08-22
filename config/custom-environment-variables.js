@@ -7,6 +7,7 @@ module.exports = {
   privateNotifyUrl: 'PRIVATE_NOTIFY_URL',
   mongo: {
     host: 'MONGO_HOST',
+    url: 'MONGO_URL',
     readPreference: 'MONGO_READ_PREFERENCE',
     ignoreDBs: {
       __name: 'MONGO_IGNORE_DBS',

@@ -9,6 +9,7 @@ module.exports = {
   mongo: {
     host: 'localhost',
     port: 27017,
+    url: null,
     readPreference: 'secondaryPreferred',
     cmdTmpl: 'CMD',
     ignoreDBs: ['admin', 'config', 'local'],
