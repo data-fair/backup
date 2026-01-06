@@ -127,19 +127,19 @@
       "required": ["day", "week", "month", "quarter", "year"],
       "properties": {
         "day": {
-          "type": "interger"
+          "type": "integer"
         },
         "week": {
-          "type": "interger"
+          "type": "integer"
         },
         "month": {
-          "type": "interger"
+          "type": "integer"
         },
         "quarter": {
-          "type": "interger"
+          "type": "integer"
         },
         "year": {
-          "type": "interger"
+          "type": "integer"
         }
       }
     },
