@@ -1,47 +1,58 @@
 version: '3'
 services:
-  sd:
-    image: ghcr.io/data-fair/simple-directory:master
-    ports:
-      - 8080:8080
-      - 1080:1080
+
+  #####
+  # reverse proxy for the whole environment
+  #####
+
+  nginx:
+    image: nginx:1.23.1-alpine
+    network_mode: host
+    volumes:
+      - ./dev/resources/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./dev/data/:/data
+
+  #####
+  # related services from the data-fair stack
+  #####
+
+  simple-directory:
+    image: ghcr.io/data-fair/simple-directory:8
+    network_mode: host
+    # ports:
+    #   - 6221:8080
+    #   - 1080:1080
+    #   - 1025:1025
+    depends_on:
+      - mongo
     environment:
-      - ADMINS=["alban.mouton@koumoul.com", "superadmin@test.com"]
+      - PORT=8080
+      - DEBUG=session
+      - ADMINS=["superadmin@test.com"]
       - PUBLIC_URL=http://localhost:5600/simple-directory
       - MAILDEV_ACTIVE=true
-      - STORAGE_TYPE=mongo
+      - STORAGE_TYPE=file
+      - ROLES_DEFAULTS=["admin", "contrib", "user"]
+      - OBSERVER_ACTIVE=false
+      - AUTHRATELIMIT_ATTEMPTS=1000
+      - CIPHER_PASSWORD=dev
+      - CONTACT=contact@test.com
+      - MONGO_URL=mongodb://localhost:27017/simple-directory
+    volumes:
+      - ./dev/resources/users.json:/app/data/users.json
+      - ./dev/resources/organizations.json:/app/data/organizations.json
 
-  data-fair:
-    image: ghcr.io/data-fair/data-fair:master
-    restart: on-failure:10
-    network_mode: host
-    environment:
-      - PORT=5601
-      - MONGO_URL=mongodb://localhost:27017/data-fair
-      - DIRECTORY_URL=http://localhost:5600/simple-directory
-      - PUBLIC_URL=http://localhost:5600/data-fair
-      - WS_PUBLIC_URL=ws://localhost:5600/data-fair
-      - PROMETHEUS_ACTIVE=false
-
-  elasticsearch:
-    image: ghcr.io/data-fair/elasticsearch:7.17.1
-    ports:
-      - 9200:9200
-    environment:
-      - discovery.type=single-node
+  #####
+  # db and search engine
+  #####
 
   mongo:
     image: mongo:4.2
     ports:
       - 27017:27017
+    volumes:
+      - mongo-data:/data/db
 
-  notify:
-    image: ghcr.io/data-fair/notify:master
-    network_mode: host
-    environment:
-      - PORT=8088
-      - PUBLIC_URL=http://localhost:5600/notify
-      - WS_PUBLIC_URL=ws://localhost:5600/notify
-      - DIRECTORY_URL=http://localhost:5600/simple-directory
-      - SECRET_NOTIFICATIONS=secret-notifications
-      - SECRET_SENDMAILS=secret-sendmails
+volumes:
+  mongo-data:
+  elasticsearch-data:

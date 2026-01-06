@@ -1,0 +1,182 @@
+{
+  "$id": "https://github.com/data-fair/events/api/config",
+  "x-exports": [
+    "types",
+    "validate"
+  ],
+  "x-ajv": {
+    "coerceTypes": "array"
+  },
+  "type": "object",
+  "title": "Api config",
+  "additionalProperties": false,
+  "required": [
+    "privateDirectoryUrl",
+    "mongo",
+    "port",
+    "secretKeys"
+  ],
+  "properties": {
+    "port": {
+      "type": "number"
+    },
+    "privateDirectoryUrl": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "secretKeys": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events"],
+      "properties": {
+        "events": {
+          "type": "string"
+        }
+      }
+    },
+    "mongo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "readPreference", "cmdTmpl", "ignoreDBs", "dumpParams"],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "readPreference": {
+          "type": "string"
+        },
+        "cmdTmpl": {
+          "type": "string"
+        },
+        "ignoreDBs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dumpParams": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "backupDir": {
+      "type": "string"
+    },
+    "dumpKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rsyncKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ownerExports": {},
+    "cloudArchive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "rsync": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "sshKey": {
+          "type": "string"
+        }
+      }
+    },
+    "splitSize": {
+      "type": "string"
+    },
+    "rotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day", "week", "month", "quarter", "year"],
+      "properties": {
+        "day": {
+          "type": "interger"
+        },
+        "week": {
+          "type": "interger"
+        },
+        "month": {
+          "type": "interger"
+        },
+        "quarter": {
+          "type": "interger"
+        },
+        "year": {
+          "type": "interger"
+        }
+      }
+    },
+    "tmpdir": {
+      "type": "string"
+    },
+    "autoTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exec", "cron"],
+      "properties": {
+        "exec": {
+          "type": "string"
+        },
+        "cron": {
+          "type": "string"
+        }
+      }
+    },
+    "serveExtraDirs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "path"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "util": {},
+    "get": {},
+    "has": {}
+  }
+}
