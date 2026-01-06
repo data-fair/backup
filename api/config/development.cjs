@@ -1,4 +1,7 @@
 module.exports = {
+  observer: {
+    port: 9092
+  },
   mongo: {
     cmdTmpl: `docker run --privileged=true --network=host --rm -v /tmp:/tmp -v ${process.cwd()}:/workdir/:Z -w /workdir/ mongo:4.0 bash -c "CMD"`,
     dumpParams: {

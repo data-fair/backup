@@ -12,9 +12,20 @@
   "additionalProperties": false,
   "required": [
     "privateDirectoryUrl",
-    "mongo",
     "port",
-    "secretKeys"
+    "secretKeys",
+    "observer",
+    "mongo",
+    "backupDir",
+    "dumpKeys",
+    "rsyncKeys",
+    "cloudArchive",
+    "rsync",
+    "splitSize",
+    "rotation",
+    "tmpdir",
+    "autoTask",
+    "serveExtraDirs"
   ],
   "properties": {
     "port": {
@@ -31,6 +42,17 @@
       "properties": {
         "events": {
           "type": "string"
+        }
+      }
+    },
+    "observer": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "port": {
+          "type": "number"
         }
       }
     },
@@ -79,7 +101,96 @@
         "type": "string"
       }
     },
-    "ownerExports": {},
+    "ownerExports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir"],
+      "properties": {
+        "dir": {
+          "type": "string"
+        },
+        "mongo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["dbs"],
+          "properties": {
+            "dbs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["db"],
+                "properties": {
+                  "db": {
+                    "type": "string"
+                  },
+                  "collections": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["collection", "ownerType"],
+                      "properties": {
+                        "collection": {
+                          "type": "string"
+                        },
+                        "ownerType": {
+                          "type": "string"
+                        },
+                        "project": {
+                          "type": "string"
+                        },
+                        "filter": {
+                          "type": "string"
+                        },
+                        "linkedCollections": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["collection", "filter"],
+                            "properties": {
+                              "collection": {
+                                "type": "string"
+                              },
+                              "filter": {
+                                "type": "string"
+                              },
+                              "ignoreFilterWarning": {
+                                "type": "boolean"
+                              },
+                              "optional": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "dirs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "path"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "cloudArchive": {
       "type": "object",
       "additionalProperties": false,

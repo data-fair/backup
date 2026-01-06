@@ -1,9 +1,9 @@
-const fs = require('fs-extra')
-const config = require('config')
-const dayjs = require('dayjs')
-const localizedFormat = require('dayjs/plugin/localizedFormat')
-const dumpUtils = require('../server/utils/dump')
-const notifications = require('../server/utils/notifications')
+import fs from 'fs-extra'
+import config from '#config'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat.js'
+import * as dumpUtils from '../src/dump.ts'
+import eventsQueue from '@data-fair/lib-node/events-queue.js'
 
 require('dayjs/locale/fr')
 dayjs.locale('fr')
@@ -12,12 +12,12 @@ dayjs.extend(localizedFormat)
 const start = dayjs()
 
 async function main () {
-  const name = dumpUtils.name(process.argv[3])
+  const name = process.argv[3] || dumpUtils.dateStr(dayjs())
   try {
     await dumpUtils.rotate()
     if (process.argv[2] === 'all') {
       for (const dumpKey of config.dumpKeys) {
-        await dumpUtils.dump(dumpKey)
+        await dumpUtils.dump(dumpKey, name)
       }
       if (config.rsync.url && (config.rsync.password || config.rsync.sshKey)) {
         for (const rsyncKey of config.rsyncKeys) {
@@ -31,16 +31,16 @@ async function main () {
     } else {
       await dumpUtils.dump(process.argv[2], process.argv[3])
     }
-    await notifications.send({
+    eventsQueue.pushEvent({
       topic: { key: 'backup:success' },
       title: `Sauvegarde de "${process.argv[2]}" terminée avec succès`,
-      body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}. Voir sur ${config.publicUrl}.`
+      body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
-  } catch (err) {
-    await notifications.send({
+  } catch (err: any) {
+    eventsQueue.pushEvent({
       topic: { key: 'backup:failure' },
       title: `ATTENTION ! Sauvegarde de "${process.argv[2]}" a échoué`,
-      body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}. Voir sur ${config.publicUrl}.`
+      body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
     try {
       await fs.writeFile(`${config.backupDir}/${name}/error.txt`, err.stack || err)

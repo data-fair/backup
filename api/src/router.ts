@@ -1,33 +1,27 @@
-const config = require('config')
-const express = require('express')
-const path = require('path')
-const fs = require('fs-extra')
-const prettyBytes = require('pretty-bytes')
-const asyncWrap = require('./utils/async-wrap')
+import config from '#config'
+import { assertAccountRole, reqAdminMode, reqSessionAuthenticated, type AccountKeys } from '@data-fair/lib-express'
+import express from 'express'
+import path from 'node:path'
+import fs from 'node:fs/promises'
+import prettyBytes from 'pretty-bytes'
 
-const api = module.exports = express.Router()
+const api = express.Router()
+export default api
 
 const serveDirs = [{ name: 'backup', path: config.backupDir }, ...config.serveExtraDirs]
-if (config.ownerExports && config.ownerExports.dir) {
+if (config.ownerExports) {
   serveDirs.push({ name: 'owner-exports', path: config.ownerExports.dir })
 }
 
-const getOwnerRole = (owner, user) => {
-  if (!user) return null
-  if (user.activeAccount.department) return null
-  if (user.activeAccount.type !== owner.type || user.activeAccount.id !== owner.id) return null
-  if (user.activeAccount.type === 'user') return 'admin'
-  return user.activeAccount.role
-}
-
 api.get('/directories', (req, res) => {
-  if (!req.user || !req.user.adminMode) return res.status(401).send()
+  reqAdminMode(req)
   res.send(serveDirs.map(serveDir => ({ path: serveDir.name, children: [] })))
 })
 for (const serveDir of serveDirs) {
-  api.get(`/directories/${serveDir.name}/*`, asyncWrap(async (req, res) => {
-    if (!req.user || !req.user.adminMode) return res.status(401).send()
-    const fullPath = path.join(serveDir.path, req.params[0])
+  api.get(`/directories/${serveDir.name}/:path*`, async (req, res) => {
+    reqAdminMode(req)
+    const nodePath = (req.params as any).path as string
+    const fullPath = path.join(serveDir.path, nodePath)
     const stats = await fs.stat(fullPath)
     if (stats.isDirectory()) {
       const childrenNames = await fs.readdir(fullPath)
@@ -35,7 +29,7 @@ for (const serveDir of serveDirs) {
       for (const childName of childrenNames) {
         if (childName === 'lost+found') continue
         const childStats = await fs.stat(path.join(fullPath, childName))
-        const childPath = path.join(serveDir.name, req.params[0], childName)
+        const childPath = path.join(serveDir.name, nodePath, childName)
         if (childStats.isDirectory()) children.push({ name: childName, path: childPath, children: [] })
         else children.push({ name: childName, path: childPath, size: prettyBytes(childStats.size) })
       }
@@ -48,16 +42,14 @@ for (const serveDir of serveDirs) {
     } else {
       res.download(fullPath)
     }
-  }))
+  })
 }
 
-if (config.ownerExports && config.ownerExports.dir) {
+const ownerExports = config.ownerExports
+if (ownerExports) {
   api.get('/owner-exports/:type/:id/:archive', (req, res) => {
-    if (!req.user) return res.status(401).send()
-    if (!req.user.adminMode && getOwnerRole(req.params, req.user) !== 'admin') {
-      console.warn('lack permission to download owner export', req.params, req.activeAccount)
-      return res.status(403).send()
-    }
-    res.download(path.join(config.ownerExports.dir, req.params.type, req.params.id, req.params.archive))
+    const sessionState = reqSessionAuthenticated(req)
+    assertAccountRole(sessionState, req.params as AccountKeys, 'admin')
+    res.download(path.join(ownerExports.dir, req.params.type, req.params.id, req.params.archive))
   })
 }

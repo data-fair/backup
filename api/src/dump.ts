@@ -1,54 +1,53 @@
-const fs = require('fs-extra')
-const path = require('path')
-const config = require('config')
-const dayjs = require('dayjs')
-const quarterOfYear = require('dayjs/plugin/quarterOfYear')
+import path from 'node:path'
+import fs from 'fs-extra'
+import dayjs, { ManipulateType } from 'dayjs'
+import config from '#config'
+import quarterOfYear from 'dayjs/plugin/quarterOfYear.js'
+import utc from 'dayjs/plugin/utc.js'
+import { MongoClient } from 'mongodb'
+import tmp from 'tmp-promise'
+import eventPromise from '@data-fair/lib-utils/event-promise.js'
+import { spawn, SpawnOptions } from 'node:child_process'
+
 dayjs.extend(quarterOfYear)
-const utc = require('dayjs/plugin/utc')
 dayjs.extend(utc)
-const { spawn } = require('child-process-promise')
-const { MongoClient } = require('mongodb')
-const tmp = require('tmp-promise')
 
 const absoluteBackupDir = path.resolve(process.cwd(), config.backupDir)
 
 if (config.cloudArchive.tenant) {
-  fs.writeFileSync('/tmp/ca-password.txt', `${config.cloudArchive.tenant}.${config.cloudArchive.user}.${config.cloudArchive.password}`)
+  await fs.writeFile('/tmp/ca-password.txt', `${config.cloudArchive.tenant}.${config.cloudArchive.user}.${config.cloudArchive.password}`)
 }
 
 if (config.rsync.password) {
-  fs.writeFileSync('/tmp/rsync-password.txt', config.rsync.password)
-  fs.chmodSync('/tmp/rsync-password.txt', '0600')
+  await fs.writeFile('/tmp/rsync-password.txt', config.rsync.password)
+  await fs.chmod('/tmp/rsync-password.txt', '0600')
 }
 if (config.rsync.sshKey) {
-  fs.writeFileSync('/tmp/rsync-ssh-key', config.rsync.sshKey)
-  fs.chmodSync('/tmp/rsync-ssh-key', '0600')
+  await fs.writeFile('/tmp/rsync-ssh-key', config.rsync.sshKey)
+  await fs.chmod('/tmp/rsync-ssh-key', '0600')
 }
 
-async function exec (cmd, opts = {}) {
-  opts.stdio = 'inherit'
-  console.log('Run: ', cmd, opts)
-  return spawn('bash', ['-c', cmd], opts)
+export async function exec (cmd: string, opts: SpawnOptions = {}) {
+  await eventPromise(spawn(cmd, { shell: true, stdio: 'inherit', ...opts }), 'close')
 }
-exports.exec = exec
 
-async function splitArchive (archive, backupName) {
+type Archive = {
+  name: String,
+  tmpPath: String
+}
+
+async function splitArchive (archive: Archive, backupName: string) {
   await exec(`split -b ${config.splitSize} ${archive.tmpPath} ${archive.name}-`, { cwd: `${absoluteBackupDir}/${backupName}` })
-  archive.tmpFile.cleanup()
 }
 
-exports.name = (name) => {
-  return name || dateStr(dayjs())
-}
-
-exports.dump = async (dumpKey, name) => {
-  name = exports.name(name)
+export const dump = async (dumpKey: string, _name?: string) => {
+  const name = _name || dateStr(dayjs())
   await fs.ensureDir(`${config.backupDir}/${name}`)
   await fs.emptyDir(config.tmpdir)
 
   if (dumpKey === 'mongo') {
-    const url = config.mongo.url || `mongodb://${config.mongo.host}:${config.mongo.port}`
-    const client = await MongoClient.connect(url, { useNewUrlParser: true })
+    const url = config.mongo.url
+    const client = await MongoClient.connect(url)
     const dbs = await client.db('admin').admin().listDatabases()
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
@@ -59,21 +58,23 @@ exports.dump = async (dumpKey, name) => {
         cmd += ` ${config.mongo.dumpParams[db]}`
       }
       await exec(config.mongo.cmdTmpl.replace('CMD', cmd))
-      await splitArchive({ tmpFile, tmpPath, name: `mongo-${db}.gz` }, name)
+      await splitArchive({ tmpPath, name: `mongo-${db}.gz` }, name)
+      await tmpFile.cleanup()
     }
     await client.close()
   } else if (dumpKey.startsWith('dir:')) {
     const [archiveName, dirPath] = dumpKey.split(':').slice(1)
-    const tmpFile = await tmp.dir({ unsafeCleanup: true, dir: config.tmpdir })
-    const tmpPath = `${tmpFile.path}/archive.zip`
+    const tmpDir = await tmp.dir({ unsafeCleanup: true, dir: config.tmpdir })
+    const tmpPath = `${tmpDir.path}/archive.zip`
     await exec(`zip ${tmpPath} -q -r -- *`, { cwd: dirPath })
-    await splitArchive({ tmpFile, tmpPath, name: `${archiveName}.zip` }, name)
+    await splitArchive({ tmpPath, name: `${archiveName}.zip` }, name)
+    await tmpDir.cleanup()
   } else {
     throw new Error(`Unknown dump key "${dumpKey}"`)
   }
 }
 
-exports.cloudArchive = async (name) => {
+export const cloudArchive = async (name: string) => {
   name = name || dateStr(dayjs())
   const files = await fs.readdir(`${absoluteBackupDir}/${name}`)
   for (const file of files) {
@@ -82,7 +83,7 @@ exports.cloudArchive = async (name) => {
   }
 }
 
-exports.rsyncArchive = async (rsyncKey) => {
+export const rsyncArchive = async (rsyncKey: string) => {
   let source, target
   if (rsyncKey === 'latest-dump') {
     source = `${absoluteBackupDir}/${dateStr(dayjs())}/`
@@ -105,14 +106,15 @@ exports.rsyncArchive = async (rsyncKey) => {
   }
 }
 
-exports.restore = async (dumpKey, name) => {
+export const restore = async (dumpKey: string, name: string) => {
   name = name || dateStr(dayjs())
   if (dumpKey.startsWith('mongo/')) {
     // for mongo the db is passed as mongo/simple-directory-production
     const db = dumpKey.replace('mongo/', '')
     const tmpFile = await tmp.file({ dir: config.tmpdir })
     await exec(`cat mongo-${db}.gz-* > ${tmpFile.path}`, { cwd: `${absoluteBackupDir}/${name}` })
-    await exec(config.mongo.cmdTmpl.replace('CMD', `mongorestore --drop --host ${config.mongo.host} --port ${config.mongo.port} --db ${db} --gzip --archive=${tmpFile.path}`))
+    const mongoUrl = new URL(config.mongo.url)
+    await exec(config.mongo.cmdTmpl.replace('CMD', `mongorestore --drop --host ${mongoUrl.hostname} --port ${mongoUrl.port} --db ${db} --gzip --archive=${tmpFile.path}`))
     tmpFile.cleanup()
   } else if (dumpKey.startsWith('dir:')) {
     const [archiveName, dirPath] = dumpKey.split(':').slice(1)
@@ -126,18 +128,18 @@ exports.restore = async (dumpKey, name) => {
   }
 }
 
-function dateStr (d) {
+export function dateStr (d: dayjs.Dayjs) {
   return d.format().slice(0, 10)
 }
 
 // manage and remove deprecated daily/weekly/monthly dumps
-exports.rotate = async () => {
+export const rotate = async () => {
   const now = dayjs.utc()
 
   const keepDirs = [dateStr(now)]
-  for (const unit of ['day', 'week', 'month', 'quarter', 'year']) {
+  for (const unit of ['day' as const, 'week' as const, 'month' as const, 'quarter' as const, 'year' as const]) {
     for (let i = 0; i < config.rotation[unit]; i++) {
-      const dir = dateStr(now.startOf(unit).subtract(i, unit))
+      const dir = dateStr(now.startOf(unit).subtract(i, unit as ManipulateType))
       console.log(`rotation ${unit}/-${i}, keep directory ${dir}`)
       keepDirs.push(dir)
     }

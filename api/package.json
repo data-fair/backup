@@ -18,11 +18,15 @@
     "@data-fair/lib-express": "^1.18.0",
     "@data-fair/lib-node": "^2.7.0",
     "config": "^3.3.11",
+    "dayjs": "^1.11.19",
     "express": "^5.0.0",
+    "fs-extra": "^11.3.3",
     "helmet": "^8.1.0",
     "http-terminator": "^3.2.0",
     "jwks-rsa": "3",
     "mongodb": "^6.8.0",
-    "prom-client": "^15.1.2"
+    "pretty-bytes": "^7.1.0",
+    "prom-client": "^15.1.2",
+    "tmp-promise": "^3.0.3"
   }
 }

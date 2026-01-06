@@ -2,6 +2,10 @@ module.exports = {
   port: 5600,
   privateDirectoryUrl: 'http://simple-directory:8080',
   privateEventsUrl: null,
+  observer: {
+    active: true,
+    port: 9090
+  },
   mongo: {
     url: 'mongodb://localhost:27017/admin',
     readPreference: 'secondaryPreferred',
@@ -20,7 +24,7 @@ module.exports = {
     // 'dir:data-fair:/data/data-fair',
     'latest-dump'
   ],
-  ownerExports: null,
+  // ownerExports: null,
   // OVH cloud archive backend for cold archiving
   cloudArchive: {
     url: 'pca@gateways.storage.sbg.cloud.ovh.net:backup',

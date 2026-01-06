@@ -1,6 +1,8 @@
 import { createServer } from 'node:http'
+import { spawn } from 'node:child_process'
 import { session } from '@data-fair/lib-express/index.js'
 import { startObserver, stopObserver } from '@data-fair/lib-node/observer.js'
+import eventPromise from '@data-fair/lib-utils/event-promise.js'
 import { createHttpTerminator } from 'http-terminator'
 import app from './app.ts'
 import config from '#config'
@@ -29,7 +31,7 @@ export const start = async () => {
     cron.schedule(config.autoTask.cron, async () => {
       try {
         console.info(`\nrunning automated task "${config.autoTask.exec}"\n`)
-        await event2promise(spawn(config.autoTask.exec, { shell: true, stdio: 'inherit' }), 'close')
+        await eventPromise(spawn(config.autoTask.exec, { shell: true, stdio: 'inherit' }), 'close')
         console.info('\nautomated task done\n')
       } catch (err) {
         console.error('problem while running automated task', err)
@@ -40,8 +42,5 @@ export const start = async () => {
 
 export const stop = async () => {
   await httpTerminator.terminate()
-  await webhooksWorker.stop()
-  await wsServer.stop()
   if (config.observer.active) await stopObserver()
-  await mongo.client.close()
 }
