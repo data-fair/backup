@@ -1,39 +1,56 @@
-const fs = require('fs-extra')
-const config = require('config')
-const path = require('path')
-const axios = require('axios')
-const tmp = require('tmp-promise')
-const { nanoid } = require('nanoid')
-const { pipeline } = require('node:stream/promises')
-const { Transform } = require('node:stream')
-const { MongoClient } = require('mongodb')
-const dumpUtils = require('../server/utils/dump')
+import fs from 'fs-extra'
+import config from '#config'
+import path from 'path'
+import tmp from 'tmp-promise'
+import { nanoid } from 'nanoid'
+import { pipeline } from 'node:stream/promises'
+import { Transform } from 'node:stream'
+import { MongoClient } from 'mongodb'
+import * as dumpUtils from '../src/dump.ts'
+
+type Dir = {
+  name: string,
+  path: string,
+  ignorePathWarning?: boolean,
+  optional?: boolean
+}
+
+type Collection = {
+  collection: string,
+  ownerType: string,
+  filter?: string,
+  project?: string
+  ignoreFilterWarning?: boolean,
+  optional?: boolean,
+  linkedCollections?: LinkedCollection[],
+  linkedDirs?: Dir[]
+}
+type LinkedCollection = {
+  collection: string,
+  filter?: string,
+  project?: string
+  ignoreFilterWarning?: boolean,
+  optional?: boolean
+}
 
 async function main () {
   if (!config.ownerExports) throw new Error('Owner exports are not configured')
   const tmpDir = (await tmp.dir({ dir: config.tmpdir, unsafeCleanup: true })).path
   const ownerType = process.argv[2]
   const ownerId = process.argv[3]
-  const ownerTmpl = (str) => str.replace(/\{ownerType\}/g, ownerType).replace(/\{ownerId\}/g, ownerId)
+  const ownerTmpl = (str: string) => str.replace(/\{ownerType\}/g, ownerType).replace(/\{ownerId\}/g, ownerId)
 
   console.log(`Export data for owner ${ownerType}/${ownerId}`)
-
-  // use the public avatar route to check that ownerId and ownerType match an actual account
-  await axios.get(`${config.directoryUrl}/api/avatars/${ownerType}/${ownerId}/avatar.png`).catch(err => {
-    console.warn(err.message)
-    throw new Error('Failed to check existence of owner using avatars link')
-  })
-  console.log('owner exists in simple directory')
 
   const outputDir = path.join(config.ownerExports.dir, ownerType, ownerId)
   await fs.ensureDir(outputDir)
 
-  const client = await MongoClient.connect(`mongodb://${config.mongo.host}:${config.mongo.port}?readPreference=${config.mongo.readPreference}`, { useNewUrlParser: true })
+  const client = await MongoClient.connect(`${config.mongo.url}?readPreference=${config.mongo.readPreference}`)
   await fs.ensureDir(path.join(tmpDir, 'mongo'))
-  const dynamicDirs = []
+  const dynamicDirs: Dir[] = []
   for (const db of config.ownerExports.mongo.dbs) {
-    const dynamicCollections = []
-    const exportCollection = async (collection) => {
+    const dynamicCollections: Collection[] = []
+    const exportCollection = async (collection: Collection) => {
       console.log('\nexport from mongo', db.db, collection.collection)
       if (!collection.filter) throw new Error('no filter defined')
       if (!collection.ignoreFilterWarning && !collection.filter.includes('{ownerId}')) {
@@ -64,7 +81,7 @@ async function main () {
               for (const key in chunk) {
                 resolvedCollectionName = resolvedCollectionName.replace(`{${key}}`, chunk[key])
               }
-              dynamicCollections.push({ ...linkedCollection, collection: resolvedCollectionName })
+              dynamicCollections.push({ ...linkedCollection, collection: resolvedCollectionName, ownerType: collection.ownerType })
             }
             for (const linkedDir of collection.linkedDirs || []) {
               let resolvedDirPath = linkedDir.path
@@ -139,7 +156,7 @@ async function main () {
 
   console.log(`
 archive is available here:
-${config.publicUrl}/api/v1/owner-exports/${ownerType}/${ownerId}/${outputFile}
+/backup/api/v1/owner-exports/${ownerType}/${ownerId}/${outputFile}
 `)
 }
 

@@ -13,6 +13,7 @@ const start = dayjs()
 
 async function main () {
   const name = process.argv[3] || dumpUtils.dateStr(dayjs())
+  await eventsQueue.start({ eventsSecret: config.secretKeys.events, eventsUrl: config.privateEventsUrl })
   try {
     await dumpUtils.rotate()
     if (process.argv[2] === 'all') {
