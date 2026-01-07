@@ -1,8 +1,8 @@
 import { createServer } from 'node:http'
-// import { spawn } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import { session } from '@data-fair/lib-express/index.js'
 import { startObserver, stopObserver } from '@data-fair/lib-node/observer.js'
-// import eventPromise from '@data-fair/lib-utils/event-promise.js'
+import eventPromise from '@data-fair/lib-utils/event-promise.js'
 import { createHttpTerminator } from 'http-terminator'
 import app from './app.ts'
 import config from '#config'
@@ -26,7 +26,7 @@ export const start = async () => {
 
   console.log(`API server listening on port ${config.port}`)
 
-  /* if (config.autoTask && config.autoTask.cron) {
+  if (config.autoTask && config.autoTask.cron) {
     const cron = await import('node-cron')
     console.log(`declare cron task "${config.autoTask.exec}" ${config.autoTask.cron}`)
     cron.schedule(config.autoTask.cron, async () => {
@@ -38,7 +38,7 @@ export const start = async () => {
         console.error('problem while running automated task', err)
       }
     })
-  } */
+  }
 }
 
 export const stop = async () => {
