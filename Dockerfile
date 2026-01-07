@@ -29,8 +29,6 @@ RUN npm ci --omit=optional --no-audit --no-fund
 ##########################
 FROM installer AS types
 
-ADD api/types api/types
-ADD api/doc api/doc
 ADD api/config api/config
 RUN npm run build-types
 
@@ -39,7 +37,6 @@ FROM installer AS ui
 
 RUN npm i --no-save @rollup/rollup-linux-x64-musl
 COPY --from=types /app/api/config api/config
-COPY --from=types /app/api/types api/types
 ADD /api/src/config.ts api/src/config.ts
 ADD /ui ui
 RUN npm -w ui run build
@@ -57,8 +54,6 @@ FROM base AS main
 
 COPY --from=api-installer /app/node_modules node_modules
 ADD /api api
-COPY --from=types /app/api/types api/types
-COPY --from=types /app/api/doc api/doc
 COPY --from=types /app/api/config api/config
 COPY --from=api-installer /app/api/node_modules api/node_modules
 COPY --from=ui /app/ui/dist ui/dist
