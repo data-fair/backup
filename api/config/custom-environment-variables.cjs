@@ -68,7 +68,7 @@ module.exports = {
     }
   },
   secretKeys: {
-    notifications: 'SECRET_NOTIFICATIONS'
+    events: 'SECRET_EVENTS'
   },
   tmpdir: 'TMPDIR',
   autoTask: {
