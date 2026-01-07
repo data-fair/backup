@@ -60,6 +60,5 @@ COPY --from=ui /app/ui/dist ui/dist
 ADD package.json README.md LICENSE BUILD.json* ./
 EXPOSE 8080
 EXPOSE 9090
-USER node
 WORKDIR /app/api
 CMD ["node", "--max-http-header-size", "64000", "--experimental-strip-types", "index.ts"]
