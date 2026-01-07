@@ -3,7 +3,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development DEBUG=upgrade,webpush node --watch --experimental-strip-types index.ts"
+    "dev": "NODE_ENV=development DEBUG=upgrade,webpush node --watch --experimental-strip-types index.ts",
+    "dump-all": "mkdir -p data/backup && node scripts/dump.ts all"
   },
   "imports": {
     "#config": "./src/config.ts",
@@ -15,7 +16,7 @@
   },
   "dependencies": {
     "@data-fair/lib-common-types": "^1.8.4",
-    "@data-fair/lib-express": "^1.18.0",
+    "@data-fair/lib-express": "^1.22.2",
     "@data-fair/lib-node": "^2.7.0",
     "config": "^3.3.11",
     "dayjs": "^1.11.19",
@@ -24,7 +25,9 @@
     "helmet": "^8.1.0",
     "http-terminator": "^3.2.0",
     "jwks-rsa": "3",
+    "memoizee": "^0.4.17",
     "mongodb": "^6.8.0",
+    "node-cron": "^4.2.1",
     "pretty-bytes": "^7.1.0",
     "prom-client": "^15.1.2",
     "tmp-promise": "^3.0.3"

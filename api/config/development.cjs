@@ -1,9 +1,16 @@
 module.exports = {
+  port: 8089,
+  privateDirectoryUrl: 'http://localhost:8080',
+  privateEventsUrl: 'http://localhost:8083',
+  authorizedIps: ['127.0.0.1'],
+  secretKeys: {
+    events: 'secret-events'
+  },
   observer: {
     port: 9092
   },
   mongo: {
-    cmdTmpl: `docker run --privileged=true --network=host --rm -v /tmp:/tmp -v ${process.cwd()}:/workdir/:Z -w /workdir/ mongo:4.0 bash -c "CMD"`,
+    cmdTmpl: `docker run --privileged=true --network=host --rm -v /tmp:/tmp -v ${process.cwd()}:/workdir/:Z -w /workdir/ mongo:8.0.17 bash -c "CMD"`,
     dumpParams: {
       'notify-production': '--excludeCollection=notifications'
     }
@@ -14,7 +21,7 @@ module.exports = {
   },
   serveExtraDirs: [{ name: 'public', path: 'public' }],
   dumpKeys: [
-    'dir:test:./test',
+    'dir:test:../test',
     'mongo'
   ],
   ownerExports: {
@@ -59,7 +66,7 @@ module.exports = {
     },
     dirs: [{
       name: 'test',
-      path: './test/{ownerType}/{ownerId}'
+      path: '../test/{ownerType}/{ownerId}'
     }]
   }
 }

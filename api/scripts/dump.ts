@@ -2,10 +2,10 @@ import fs from 'fs-extra'
 import config from '#config'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat.js'
+import 'dayjs/locale/fr.js'
 import * as dumpUtils from '../src/dump.ts'
 import eventsQueue from '@data-fair/lib-node/events-queue.js'
 
-require('dayjs/locale/fr')
 dayjs.locale('fr')
 dayjs.extend(localizedFormat)
 

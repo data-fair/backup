@@ -17,7 +17,7 @@ services:
   #####
 
   simple-directory:
-    image: ghcr.io/data-fair/simple-directory:8
+    image: ghcr.io/data-fair/simple-directory:master
     network_mode: host
     # ports:
     #   - 6221:8080
@@ -29,7 +29,7 @@ services:
       - PORT=8080
       - DEBUG=session
       - ADMINS=["superadmin@test.com"]
-      - PUBLIC_URL=http://localhost:5600/simple-directory
+      - PUBLIC_URL=http://localhost:5609/simple-directory
       - MAILDEV_ACTIVE=true
       - STORAGE_TYPE=file
       - ROLES_DEFAULTS=["admin", "contrib", "user"]
@@ -41,6 +41,20 @@ services:
     volumes:
       - ./dev/resources/users.json:/app/data/users.json
       - ./dev/resources/organizations.json:/app/data/organizations.json
+
+  events:
+    image: ghcr.io/data-fair/events:main
+    network_mode: host
+    depends_on:
+      - mongo
+    environment:
+      - PORT=8083
+      - MONGO_URL=mongodb://localhost:27017/data-fair-events
+      - PRIVATE_DIRECTORY_URL=http://localhost:5609/simple-directory
+      - SECRET_IDENTITIES=secret-identities
+      - SECRET_EVENTS=secret-events
+      - SECRET_SENDMAILS=secret-sendmails
+      - OBSERVER_ACTIVE=false
 
   #####
   # db and search engine

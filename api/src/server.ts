@@ -27,7 +27,7 @@ export const start = async () => {
   console.log(`API server listening on port ${config.port}`)
 
   if (config.autoTask && config.autoTask.cron) {
-    const cron = require('node-cron')
+    const cron = await import('node-cron')
     cron.schedule(config.autoTask.cron, async () => {
       try {
         console.info(`\nrunning automated task "${config.autoTask.exec}"\n`)

@@ -1,14 +1,14 @@
 module.exports = {
-  port: 5600,
+  port: 8080,
   privateDirectoryUrl: 'http://simple-directory:8080',
   authorizedIps: [],
-  privateEventsUrl: null,
+  // privateEventsUrl: null,
   observer: {
     active: true,
     port: 9090
   },
   mongo: {
-    url: 'mongodb://localhost:27017/admin',
+    url: 'mongodb://localhost:27017',
     readPreference: 'secondaryPreferred',
     cmdTmpl: 'CMD',
     ignoreDBs: ['admin', 'config', 'local'],
@@ -48,11 +48,11 @@ module.exports = {
     year: 1
   },
   secretKeys: {
-    notifications: 'secret-notifications'
+    // events: 'secret-events'
   },
   tmpdir: '/tmp/backup',
   autoTask: {
-    exec: 'node scripts/dump.js all',
+    exec: 'node scripts/dump.ts all',
     // 1am every day ? '0 1 * * *'
     cron: null
   },

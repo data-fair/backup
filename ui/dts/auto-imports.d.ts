@@ -161,7 +161,6 @@ declare module 'vue' {
     readonly dfUiNotifAlert: UnwrapRef<typeof import('@data-fair/lib-vuetify/ui-notif-alert.vue')['default']>
     readonly dfUserAvatar: UnwrapRef<typeof import('@data-fair/lib-vuetify/ui-user-avatar.vue')['default']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
-    readonly equalDeviceRegistrations: UnwrapRef<typeof import('../src/utils/registrations')['equalDeviceRegistrations']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
@@ -171,19 +170,6 @@ declare module 'vue' {
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
-    readonly mdiAlertCircle: UnwrapRef<typeof import('@mdi/js')['mdiAlertCircle']>
-    readonly mdiBell: UnwrapRef<typeof import('@mdi/js')['mdiBell']>
-    readonly mdiCancel: UnwrapRef<typeof import('@mdi/js')['mdiCancel']>
-    readonly mdiCellphone: UnwrapRef<typeof import('@mdi/js')['mdiCellphone']>
-    readonly mdiCheckCircle: UnwrapRef<typeof import('@mdi/js')['mdiCheckCircle']>
-    readonly mdiDelete: UnwrapRef<typeof import('@mdi/js')['mdiDelete']>
-    readonly mdiDevices: UnwrapRef<typeof import('@mdi/js')['mdiDevices']>
-    readonly mdiDotsVertical: UnwrapRef<typeof import('@mdi/js')['mdiDotsVertical']>
-    readonly mdiEmail: UnwrapRef<typeof import('@mdi/js')['mdiEmail']>
-    readonly mdiRefresh: UnwrapRef<typeof import('@mdi/js')['mdiRefresh']>
-    readonly mdiRss: UnwrapRef<typeof import('@mdi/js')['mdiRss']>
-    readonly mdiSend: UnwrapRef<typeof import('@mdi/js')['mdiSend']>
-    readonly mdiWeb: UnwrapRef<typeof import('@mdi/js')['mdiWeb']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
@@ -201,13 +187,11 @@ declare module 'vue' {
     readonly onUnmounted: UnwrapRef<typeof import('vue')['onUnmounted']>
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
-    readonly parseSender: UnwrapRef<typeof import('../src/utils/sender-utils')['parseSender']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
     readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
     readonly ref: UnwrapRef<typeof import('vue')['ref']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
-    readonly serializeSender: UnwrapRef<typeof import('../src/utils/sender-utils')['serializeSender']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
@@ -217,7 +201,6 @@ declare module 'vue' {
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
-    readonly urlBase64ToUint8Array: UnwrapRef<typeof import('../src/utils/registrations')['urlBase64ToUint8Array']>
     readonly useAsyncAction: UnwrapRef<typeof import('@data-fair/lib-vue/async-action.js')['useAsyncAction']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useBooleanSearchParam: UnwrapRef<typeof import('@data-fair/lib-vue/reactive-search-params.js')['useBooleanSearchParam']>
@@ -239,7 +222,6 @@ declare module 'vue' {
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useStringSearchParam: UnwrapRef<typeof import('@data-fair/lib-vue/reactive-search-params.js')['useStringSearchParam']>
     readonly useStringsArraySearchParam: UnwrapRef<typeof import('@data-fair/lib-vue/reactive-search-params.js')['useStringsArraySearchParam']>
-    readonly useSubscriptions: UnwrapRef<typeof import('../src/composables/use-subscriptions')['default']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useUiNotif: UnwrapRef<typeof import('@data-fair/lib-vue/ui-notif.js')['useUiNotif']>
     readonly useWS: UnwrapRef<typeof import('@data-fair/lib-vue/ws.js')['useWS']>

@@ -1,9 +1,10 @@
 import { resolve } from 'node:path'
-import { errorHandler, createSiteMiddleware, createSpaMiddleware } from '@data-fair/lib-express/index.js'
+import { errorHandler, createSiteMiddleware, createSpaMiddleware, session } from '@data-fair/lib-express/index.js'
 import express from 'express'
 import helmet from 'helmet'
 import apiRouter from './router.ts'
 import { uiConfig } from '#config'
+import { getSiteHashes } from './utils/site.ts'
 
 const app = express()
 export default app
@@ -25,12 +26,14 @@ app.set('query parser', 'simple')
 app.use(express.json())
 
 app.use(createSiteMiddleware('backup'))
+app.use(session.middleware())
 
 app.use('/api', apiRouter)
 app.use('/api', (req, res) => res.status(404).send('unknown api endpoint'))
 
 app.use(await createSpaMiddleware(resolve(import.meta.dirname, '../../ui/dist'), uiConfig, {
-  csp: { nonce: true, header: true }
+  csp: { nonce: true, header: true },
+  getSiteExtraParams: getSiteHashes
 }))
 
 app.use(errorHandler)

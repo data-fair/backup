@@ -1,13 +1,13 @@
 import path from 'node:path'
 import fs from 'fs-extra'
-import dayjs, { ManipulateType } from 'dayjs'
+import dayjs, { type ManipulateType } from 'dayjs'
 import config from '#config'
 import quarterOfYear from 'dayjs/plugin/quarterOfYear.js'
 import utc from 'dayjs/plugin/utc.js'
 import { MongoClient } from 'mongodb'
 import tmp from 'tmp-promise'
 import eventPromise from '@data-fair/lib-utils/event-promise.js'
-import { spawn, SpawnOptions } from 'node:child_process'
+import { spawn, type SpawnOptions } from 'node:child_process'
 
 dayjs.extend(quarterOfYear)
 dayjs.extend(utc)
@@ -28,6 +28,7 @@ if (config.rsync.sshKey) {
 }
 
 export async function exec (cmd: string, opts: SpawnOptions = {}) {
+  console.log('EXEC', cmd, opts)
   await eventPromise(spawn(cmd, { shell: true, stdio: 'inherit', ...opts }), 'close')
 }
 
@@ -46,14 +47,13 @@ export const dump = async (dumpKey: string, _name?: string) => {
   await fs.emptyDir(config.tmpdir)
 
   if (dumpKey === 'mongo') {
-    const url = config.mongo.url
-    const client = await MongoClient.connect(url)
+    const client = await MongoClient.connect(config.mongo.url)
     const dbs = await client.db('admin').admin().listDatabases()
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
       const tmpFile = await tmp.file({ dir: config.tmpdir })
       const tmpPath = tmpFile.path
-      let cmd = `mongodump --uri ${url} --readPreference ${config.mongo.readPreference} --db ${db} --gzip --archive=${tmpPath}`
+      let cmd = `mongodump --uri ${config.mongo.url}/${db}?readPreference=${config.mongo.readPreference} --gzip --archive=${tmpPath}`
       if (config.mongo.dumpParams && config.mongo.dumpParams[db]) {
         cmd += ` ${config.mongo.dumpParams[db]}`
       }

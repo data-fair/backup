@@ -17,7 +17,7 @@ type Dir = {
 
 type Collection = {
   collection: string,
-  ownerType: string,
+  ownerType?: string,
   filter?: string,
   project?: string
   ignoreFilterWarning?: boolean,

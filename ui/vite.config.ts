@@ -23,7 +23,7 @@ export default defineConfig({
   },
   plugins: [
     VueRouter({ dts: './dts/typed-router.d.ts' }),
-    Vue(),
+    Vue({ template: { compilerOptions: { isCustomElement: (tag) => ['d-frame'].includes(tag) } } }),
     VueI18nPlugin(),
     Vuetify({ styles: { configFile: settingsPath } }),
     AutoImport({
@@ -46,8 +46,13 @@ export default defineConfig({
       async transformIndexHtml (html) {
         // in production this injection will be performed by an express middleware
         if (process.env.NODE_ENV !== 'development') return html
-        const { uiConfig } = await import('../api/src/config')
-        return microTemplate(html, { SITE_PATH: '', UI_CONFIG: JSON.stringify(uiConfig) })
+        const { uiConfigPath } = (await import('@data-fair/lib-express')).prepareUiConfig((await import('../api/src/config.ts')).uiConfig)
+        return microTemplate(html, {
+          SITE_PATH: '',
+          UI_CONFIG_PATH: uiConfigPath,
+          THEME_CSS_HASH: '',
+          PUBLIC_SITE_INFO_HASH: ''
+        })
       }
     }
   ],

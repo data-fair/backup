@@ -141,7 +141,7 @@
                     "items": {
                       "type": "object",
                       "additionalProperties": false,
-                      "required": ["collection", "ownerType"],
+                      "required": ["collection"],
                       "properties": {
                         "collection": {
                           "type": "string"

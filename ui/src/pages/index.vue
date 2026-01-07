@@ -1,43 +1,61 @@
 <template>
-  <div>
-    <v-app-bar density="comfortable">
-      <v-spacer />
-      <personal-menu dark-mode-switch />
-    </v-app-bar>
-
-    <p>
-      <ul>
-        <li
-          v-for="(link,i) in links"
-          :key="i"
+  <v-container fluid>
+    <v-navigation-drawer location="right">
+      <d-frame
+        :src="`/events/embed/subscribe?key=backup:success,backup:failure&title=${encodeURIComponent('Succès,Échec')}&noSender=true`"
+        resize="yes"
+      />
+    </v-navigation-drawer>
+    <v-layout column>
+      <v-layout
+        row
+        wrap
+        class="px-4"
+      >
+        <v-treeview
+          v-if="fetchDirectories.data.value"
+          :items="directories"
+          :load-children="fetchChildren"
+          item-value="path"
+          item-title="path"
+          open-on-click
+          density="compact"
         >
-          <a :href="link[0]">{{ link[1] }}</a>
-        </li>
-      </ul>
-    </p>
-    <p>
-      Session : <pre>{{ session.state }}</pre>
-    </p>
-  </div>
+          <template #title="{item}">
+            {{ item.name || item.path }}<span v-if="item.size"> ({{ item.size }})</span>
+          </template>
+          <template #append="{item}">
+            <v-btn
+              v-if="!item.children"
+              icon
+              color="primary"
+              size="small"
+              variant="text"
+              :href="'/backup/api/directories/' + item.path"
+            >
+              <v-icon :icon="mdiDownload" />
+            </v-btn>
+          </template>
+        </v-treeview>
+      </v-layout>
+    </v-layout>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import personalMenu from '@data-fair/lib-vuetify/personal-menu.vue'
+import '@data-fair/frame/lib/d-frame.js'
+import clone from '@data-fair/lib-utils/clone.js'
+import { mdiDownload } from '@mdi/js'
 
-const session = useSession()
+const fetchChildren = async (item: any) => {
+  const children = await $fetch(`directories/${item.path}/`)
+  item.children.push(...children)
+}
 
-const links = [
-  ['/simple-directory', 'User management'],
-  ['/events/embed/events', 'Account events'],
-  ['/events/embed/subscribe?key=topic1,topic2&title=Topic 1,Topic 2&sender=organization:orga1', 'Subscribe to a topic'],
-  ['/events/embed/subscriptions', 'User subscriptions'],
-  ['/events/embed/subscribe-webhooks?key=topic&title=Topic', 'Subscribe webhooks to a topic'],
-  ['/events/embed/notifications', 'User notifications'],
-  ['/events/embed/devices', 'User devices'],
-  ['/built/events/embed/devices', 'Built version']
-]
+const directories = ref([] as any[])
+const fetchDirectories = useFetch<any[]>($apiPath + '/directories/')
+watch(fetchDirectories.data, (dirs) => {
+  if (dirs) directories.value = clone(dirs)
+})
+
 </script>
-
-  <style>
-
-  </style>

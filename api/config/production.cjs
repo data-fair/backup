@@ -1,5 +1,4 @@
 module.exports = {
-  port: 8080,
   mongo: {
     ignoreDBs: [
       'sirene-3-production',
