@@ -13,6 +13,7 @@
   "required": [
     "privateDirectoryUrl",
     "privateEventsUrl",
+    "authorizedIps",
     "port",
     "secretKeys",
     "observer",
@@ -35,6 +36,12 @@
     "privateDirectoryUrl": {
       "type": "string",
       "pattern": "^https?://"
+    },
+    "authorizedIps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "privateEventsUrl": {
       "type": "string",

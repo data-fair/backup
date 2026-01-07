@@ -1,5 +1,5 @@
 import config from '#config'
-import { assertAccountRole, reqAdminMode, reqSessionAuthenticated, type AccountKeys } from '@data-fair/lib-express'
+import { assertAccountRole, httpError, reqAdminMode, reqIp, reqSessionAuthenticated, type AccountKeys } from '@data-fair/lib-express'
 import express from 'express'
 import path from 'node:path'
 import fs from 'node:fs/promises'
@@ -40,6 +40,10 @@ for (const serveDir of serveDirs) {
       })
       res.send(children)
     } else {
+      const ip = reqIp(req)
+      if (!config.authorizedIps.includes(ip)) {
+        throw httpError(401, `unauthorized IP ${ip}`)
+      }
       res.download(fullPath)
     }
   })

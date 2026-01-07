@@ -1,6 +1,7 @@
 module.exports = {
   port: 5600,
   privateDirectoryUrl: 'http://simple-directory:8080',
+  authorizedIps: [],
   privateEventsUrl: null,
   observer: {
     active: true,

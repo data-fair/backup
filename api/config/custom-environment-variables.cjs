@@ -3,6 +3,10 @@ module.exports = {
   sessionDomain: 'SESSION_DOMAIN',
   directoryUrl: 'DIRECTORY_URL',
   privateDirectoryUrl: 'PRIVATE_DIRECTORY_URL',
+  authorizedIps: {
+    __name: 'AUTHORIZED_IPS',
+    __format: 'json'
+  },
   notifyUrl: 'NOTIFY_URL',
   privateNotifyUrl: 'PRIVATE_NOTIFY_URL',
   mongo: {
