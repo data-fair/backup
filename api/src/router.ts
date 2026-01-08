@@ -4,6 +4,7 @@ import express from 'express'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import prettyBytes from 'pretty-bytes'
+import resolvePath from 'resolve-path' // safe replacement for path.resolve
 
 const api = express.Router()
 export default api
@@ -62,6 +63,8 @@ if (ownerExports) {
   api.get('/owner-exports/:type/:id/:archive', (req, res) => {
     const sessionState = reqSessionAuthenticated(req)
     assertAccountRole(sessionState, req.params as AccountKeys, 'admin')
-    res.download(path.join(ownerExports.dir, req.params.type, req.params.id, req.params.archive))
+    const ownerDir = path.join(ownerExports.dir, req.params.type, req.params.id)
+    const archivePath = resolvePath(ownerDir, req.params.archive)
+    res.download(archivePath)
   })
 }

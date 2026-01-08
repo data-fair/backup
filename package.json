@@ -44,6 +44,7 @@
     "@types/debug": "^4.1.12",
     "@types/fs-extra": "^11.0.4",
     "@types/memoizee": "^0.4.12",
+    "@types/resolve-path": "^1.4.3",
     "commitlint": "^19.2.2",
     "eslint": "^9.10.0",
     "eslint-plugin-vue": "^9.29.0",

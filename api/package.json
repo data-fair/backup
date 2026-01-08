@@ -30,6 +30,7 @@
     "node-cron": "^4.2.1",
     "pretty-bytes": "^7.1.0",
     "prom-client": "^15.1.2",
+    "resolve-path": "^1.4.0",
     "tmp-promise": "^3.0.3"
   }
 }
