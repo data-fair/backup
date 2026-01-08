@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid'
 import { pipeline } from 'node:stream/promises'
 import { Transform } from 'node:stream'
 import { MongoClient } from 'mongodb'
-import * as dumpUtils from '../src/dump.ts'
+import { exec } from '../src/utils/exec.ts'
 
 type Dir = {
   name: string,
@@ -145,14 +145,14 @@ async function main () {
       console.log('no children in folder, skip it')
       continue
     }
-    await dumpUtils.exec(`zip ${outFile} -q -r -- *`, { cwd: p })
+    await exec(`zip ${outFile} -q -r -- *`, { cwd: p })
     console.log(`archived directory (${nbChildren} children) to file ${outFile}`)
   }
 
   const outputFile = `${new Date().toISOString().slice(0, 10)}-${nanoid()}.zip`
   const outputArchive = path.resolve(path.join(outputDir, outputFile))
   console.log('\nprepare final zip archive')
-  await dumpUtils.exec(`zip ${outputArchive} -q -r -- *`, { cwd: tmpDir })
+  await exec(`zip ${outputArchive} -q -r -- *`, { cwd: tmpDir })
 
   console.log(`
 archive is available here:

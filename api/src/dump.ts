@@ -6,9 +6,8 @@ import quarterOfYear from 'dayjs/plugin/quarterOfYear.js'
 import utc from 'dayjs/plugin/utc.js'
 import { MongoClient } from 'mongodb'
 import tmp from 'tmp-promise'
-import eventPromise from '@data-fair/lib-utils/event-promise.js'
-import { spawn, type SpawnOptions } from 'node:child_process'
 import debugModule from 'debug'
+import { exec } from './utils/exec.ts'
 
 const debug = debugModule('dump')
 
@@ -28,11 +27,6 @@ if (config.rsync.password) {
 if (config.rsync.sshKey) {
   await fs.writeFile('/tmp/rsync-ssh-key', config.rsync.sshKey)
   await fs.chmod('/tmp/rsync-ssh-key', '0600')
-}
-
-export async function exec (cmd: string, opts: SpawnOptions = {}) {
-  debug('exec', cmd, opts)
-  await eventPromise(spawn(cmd, { shell: true, stdio: 'inherit', ...opts }), 'close')
 }
 
 type Archive = {
