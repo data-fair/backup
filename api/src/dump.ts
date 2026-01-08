@@ -8,6 +8,9 @@ import { MongoClient } from 'mongodb'
 import tmp from 'tmp-promise'
 import eventPromise from '@data-fair/lib-utils/event-promise.js'
 import { spawn, type SpawnOptions } from 'node:child_process'
+import debugModule from 'debug'
+
+const debug = debugModule('dump')
 
 dayjs.extend(quarterOfYear)
 dayjs.extend(utc)
@@ -28,7 +31,7 @@ if (config.rsync.sshKey) {
 }
 
 export async function exec (cmd: string, opts: SpawnOptions = {}) {
-  console.log('EXEC', cmd, opts)
+  debug('exec', cmd, opts)
   await eventPromise(spawn(cmd, { shell: true, stdio: 'inherit', ...opts }), 'close')
 }
 
@@ -43,14 +46,18 @@ async function splitArchive (archive: Archive, backupName: string) {
 
 export const dump = async (dumpKey: string, _name?: string) => {
   const name = _name || dateStr(dayjs())
+  debug(`ensure backup dir ${config.backupDir}/${name}`)
   await fs.ensureDir(`${config.backupDir}/${name}`)
+  debug(`empty tmpdir ${config.tmpdir}`)
   await fs.emptyDir(config.tmpdir)
 
   if (dumpKey === 'mongo') {
+    debug('connect to mongodb', config.mongo.url)
     const client = await MongoClient.connect(config.mongo.url)
     const dbs = await client.db('admin').admin().listDatabases()
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
+      console.log(`work on db ${db}`)
       const tmpFile = await tmp.file({ dir: config.tmpdir })
       const tmpPath = tmpFile.path
       let cmd = `mongodump --uri ${config.mongo.url}/${db}?readPreference=${config.mongo.readPreference} --gzip --archive=${tmpPath}`
@@ -63,6 +70,7 @@ export const dump = async (dumpKey: string, _name?: string) => {
     }
     await client.close()
   } else if (dumpKey.startsWith('dir:')) {
+    debug(`work on directory archive ${dumpKey}`)
     const [archiveName, dirPath] = dumpKey.split(':').slice(1)
     const tmpDir = await tmp.dir({ unsafeCleanup: true, dir: config.tmpdir })
     const tmpPath = `${tmpDir.path}/archive.zip`
@@ -85,6 +93,7 @@ export const cloudArchive = async (name: string) => {
 
 export const rsyncArchive = async (rsyncKey: string) => {
   let source, target
+  debug('rsync archive', rsyncKey)
   if (rsyncKey === 'latest-dump') {
     source = `${absoluteBackupDir}/${dateStr(dayjs())}/`
     target = 'dump'

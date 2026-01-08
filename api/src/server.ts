@@ -28,7 +28,7 @@ export const start = async () => {
 
   if (config.autoTask && config.autoTask.cron) {
     const cron = await import('node-cron')
-    console.log(`declare cron task "${config.autoTask.exec}" ${config.autoTask.cron}`)
+    console.log(`init cron task "${config.autoTask.exec}" ${config.autoTask.cron}`)
     cron.schedule(config.autoTask.cron, async () => {
       try {
         console.info(`\nrunning automated task "${config.autoTask.exec}"\n`)
