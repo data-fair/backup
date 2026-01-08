@@ -57,10 +57,11 @@ export const dump = async (dumpKey: string, _name?: string) => {
       const mongoUrl = new URL(config.mongo.url)
       mongoUrl.searchParams.set('readPreference', config.mongo.readPreference)
       mongoUrl.pathname = '/' + db
-      let cmd = `mongodump --gzip --archive=${tmpPath} --uri ${mongoUrl.href}`
+      let cmd = `mongodump --gzip --archive=${tmpPath}`
       if (config.mongo.dumpParams && config.mongo.dumpParams[db]) {
         cmd += ` ${config.mongo.dumpParams[db]}`
       }
+      cmd += ` --uri ${mongoUrl.href}`
       await exec(config.mongo.cmdTmpl.replace('CMD', cmd))
       await splitArchive({ tmpPath, name: `mongo-${db}.gz` }, name)
       await tmpFile.cleanup()
