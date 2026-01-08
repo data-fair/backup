@@ -58,6 +58,7 @@ export const dump = async (dumpKey: string, _name?: string) => {
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
       debug(`work on db ${db}`)
+      debug(`create tmp file ${config.tmpdir}`)
       const tmpFile = await tmp.file({ dir: config.tmpdir })
       debug(`created tmp file ${tmpFile.path}`)
       const tmpPath = tmpFile.path
