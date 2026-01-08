@@ -37,6 +37,7 @@ async function main () {
       title: `Sauvegarde de "${process.argv[2]}" terminée avec succès`,
       body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
+    await eventsQueue.stop()
     console.log('dump finished')
   } catch (err: any) {
     eventsQueue.pushEvent({
@@ -49,6 +50,7 @@ async function main () {
     } catch (fsErr) {
       // nothing
     }
+    await eventsQueue.stop()
     throw err
   }
 }
