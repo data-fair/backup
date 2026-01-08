@@ -57,7 +57,7 @@ export const dump = async (dumpKey: string, _name?: string) => {
       const mongoUrl = new URL(config.mongo.url)
       mongoUrl.searchParams.set('readPreference', config.mongo.readPreference)
       mongoUrl.pathname = '/' + db
-      let cmd = `mongodump --uri ${mongoUrl.href} --gzip --archive=${tmpPath}`
+      let cmd = `mongodump --gzip --archive=${tmpPath} --uri ${mongoUrl.href}`
       if (config.mongo.dumpParams && config.mongo.dumpParams[db]) {
         cmd += ` ${config.mongo.dumpParams[db]}`
       }
