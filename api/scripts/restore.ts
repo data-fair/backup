@@ -14,12 +14,14 @@ async function main () {
       title: `Restauration de "${process.argv[2]}/${process.argv[3]}" terminée avec succès`,
       body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
+    console.log('restore finished')
   } catch (err) {
     eventsQueue.pushEvent({
       topic: { key: 'backup:failure' },
       title: `ATTENTION ! Restauration de "${process.argv[2]}/${process.argv[3]}" a échoué`,
       body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
+    console.log('restore failed')
     throw err
   }
 }

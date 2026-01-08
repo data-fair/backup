@@ -37,6 +37,7 @@ async function main () {
       title: `Sauvegarde de "${process.argv[2]}" terminée avec succès`,
       body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
+    console.log('dump finished')
   } catch (err: any) {
     eventsQueue.pushEvent({
       topic: { key: 'backup:failure' },
@@ -48,6 +49,7 @@ async function main () {
     } catch (fsErr) {
       // nothing
     }
+    console.log('dump failed')
     throw err
   }
 }
