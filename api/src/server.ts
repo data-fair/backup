@@ -1,10 +1,9 @@
 import { createServer } from 'node:http'
-import { spawn } from 'node:child_process'
 import { session } from '@data-fair/lib-express/index.js'
 import { startObserver, stopObserver } from '@data-fair/lib-node/observer.js'
-import eventPromise from '@data-fair/lib-utils/event-promise.js'
 import { createHttpTerminator } from 'http-terminator'
 import app from './app.ts'
+import { exec } from './utils/exec.ts'
 import config from '#config'
 
 const server = createServer(app)
@@ -32,7 +31,7 @@ export const start = async () => {
     cron.schedule(config.autoTask.cron, async () => {
       try {
         console.info(`\nrunning automated task "${config.autoTask.exec}"\n`)
-        await eventPromise(spawn(config.autoTask.exec, { shell: true, stdio: 'inherit' }), 'close')
+        await exec(config.autoTask.exec)
         console.info('\nautomated task done\n')
       } catch (err) {
         console.error('problem while running automated task', err)
