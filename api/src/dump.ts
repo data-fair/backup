@@ -57,7 +57,7 @@ export const dump = async (dumpKey: string, _name?: string) => {
     const dbs = await client.db('admin').admin().listDatabases()
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
-      console.log(`work on db ${db}`)
+      debug(`work on db ${db}`)
       const tmpFile = await tmp.file({ dir: config.tmpdir })
       const tmpPath = tmpFile.path
       let cmd = `mongodump --uri ${config.mongo.url}/${db}?readPreference=${config.mongo.readPreference} --gzip --archive=${tmpPath}`
