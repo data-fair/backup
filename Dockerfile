@@ -4,6 +4,8 @@ FROM node:24.12.0-alpine3.23 AS base
 WORKDIR /app
 ENV NODE_ENV=production
 
+RUN apk add --no-cache mongodb-tools zip unzip bash openssh-client rsync sshpass
+
 ##########################
 FROM base AS package-strip
 

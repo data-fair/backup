@@ -49,7 +49,6 @@ async function main () {
     } catch (fsErr) {
       // nothing
     }
-    console.log('dump failed', err)
     throw err
   }
 }
