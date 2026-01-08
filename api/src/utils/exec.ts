@@ -1,7 +1,10 @@
 import { spawn, type SpawnOptions } from 'node:child_process'
+import debugModule from 'debug'
+
+const debug = debugModule('exec')
 
 export async function exec (cmd: string, opts: SpawnOptions = {}) {
-  console.log('exec', cmd, opts)
+  debug('exec command', cmd, opts)
   return new Promise<void>((resolve, reject) => {
     const childProcess = spawn(cmd, { shell: true, stdio: 'inherit', ...opts })
     childProcess.on('error', reject)

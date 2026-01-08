@@ -52,11 +52,12 @@ export const dump = async (dumpKey: string, _name?: string) => {
     await client.close()
     for (const db of dbs.databases.map(db => db.name).filter(db => !config.mongo.ignoreDBs.includes(db))) {
       debug(`work on db ${db}`)
-      debug(`create tmp file ${config.tmpdir}`)
       const tmpFile = await tmp.file({ dir: config.tmpdir })
-      debug(`created tmp file ${tmpFile.path}`)
       const tmpPath = tmpFile.path
-      let cmd = `mongodump --uri ${config.mongo.url}/${db}?readPreference=${config.mongo.readPreference} --gzip --archive=${tmpPath}`
+      const mongoUrl = new URL(config.mongo.url)
+      mongoUrl.searchParams.set('readPreference', config.mongo.readPreference)
+      mongoUrl.pathname = '/' + db
+      let cmd = `mongodump --uri ${mongoUrl.href} --gzip --archive=${tmpPath}`
       if (config.mongo.dumpParams && config.mongo.dumpParams[db]) {
         cmd += ` ${config.mongo.dumpParams[db]}`
       }
