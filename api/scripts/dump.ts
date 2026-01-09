@@ -42,7 +42,7 @@ async function main () {
       body: `Démarrée le ${start.format('LL')} à ${start.format('LT')}.`
     })
     await eventsQueue.stop()
-    console.log('dump finished')
+    debug('dump script finished')
   } catch (err: any) {
     debug('send failure event')
     eventsQueue.pushEvent({

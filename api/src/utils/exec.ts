@@ -6,7 +6,8 @@ const debug = debugModule('exec')
 export function exec (cmd: string, opts: SpawnOptions = {}) {
   debug('exec command', cmd, opts)
   return new Promise<void>((resolve, reject) => {
-    const childProcess = spawn(cmd, { shell: true, stdio: 'inherit', ...opts })
+    // ignore stdin and stdout, inherit stderr
+    const childProcess = spawn(cmd, { shell: true, stdio: ['ignore', 'ignore', 'inherit'], ...opts })
     childProcess.on('error', reject)
     childProcess.on('close', (code, signal) => {
       if (signal !== null) return reject(new Error('process interrupted by signal ' + signal))
