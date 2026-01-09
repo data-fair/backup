@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="-5 0 121 110"
+   width="220"
+   height="220"
+   class="logo"
+   version="1.1"
+   id="svg21"
+   sodipodi:docname="logo.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata25">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1871"
+     inkscape:window-height="1043"
+     id="namedview23"
+     showgrid="false"
+     inkscape:zoom="1.18"
+     inkscape:cx="96.588689"
+     inkscape:cy="264.05103"
+     inkscape:window-x="49"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g19"
+     scale-x="1" />
+  <defs
+     id="defs13">
+    <filter
+       id="dropshadow">
+      <feGaussianBlur
+         in="SourceAlpha"
+         stdDeviation="2"
+         id="feGaussianBlur2" />
+      <feOffset
+         dx="2"
+         dy="2"
+         result="offsetblur"
+         id="feOffset4" />
+      <feMerge
+         id="feMerge10">
+        <feMergeNode
+           id="feMergeNode6" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode8" />
+      </feMerge>
+    </filter>
+  </defs>
+  <g
+     id="g19"
+     transform="translate(0,11)">
+    <path
+       d="m 8.2020296,-11.233421 6.9358544,55.46976 90.138786,-0.0034 z"
+       id="path17"
+       inkscape:connector-curvature="0"
+       style="fill:#90caf9;filter:url(#dropshadow)" />
+    <!--<path d="M35,5 L65,5 L31,92 A4,4 0 0 1 28,95 L2,95 A3,3 0 0 1 1,92 Z" fill="#90caf9" filter="url(#dropshadow)"></path>
+        <path d="M65,5 L35,5 L69,92 A4,4 0 0 0 72,95 L98,95 A3,3 0 0 0 99,92 Z" fill="#0288d1" filter="url(#dropshadow)"></path>-->
+    <path
+       d="M 8.1266461,99.60144 16.240614,46.997606 101.94234,47.46109 Z"
+       id="path15"
+       inkscape:connector-curvature="0"
+       style="fill:#0288d1;filter:url(#dropshadow)" />
+  </g>
+</svg>

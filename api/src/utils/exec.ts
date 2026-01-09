@@ -1,0 +1,24 @@
+import { spawn, type SpawnOptions } from 'node:child_process'
+import debugModule from 'debug'
+
+const debug = debugModule('exec')
+
+export function exec (cmd: string, opts: SpawnOptions = {}) {
+  debug('exec command', cmd, opts)
+  return new Promise<void>((resolve, reject) => {
+    // ignore stdin and stdout, inherit stderr
+    // const stdio = ['ignore', 'ignore', 'inherit']
+    const stdio = 'ignore'
+    const childProcess = spawn(cmd.trim(), { shell: true, stdio, ...opts })
+    childProcess.on('error', (err) => {
+      debug('exec finished with error', err)
+      reject(err)
+    })
+    childProcess.on('close', (code, signal) => {
+      debug('exec closed', code, signal)
+      if (signal !== null) return reject(new Error('process interrupted by signal ' + signal))
+      if (code !== 0) return reject(new Error('process finished with code ' + code))
+      resolve()
+    })
+  })
+}

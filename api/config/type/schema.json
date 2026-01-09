@@ -1,0 +1,339 @@
+{
+  "$id": "https://github.com/data-fair/events/api/config",
+  "x-exports": [
+    "types",
+    "validate"
+  ],
+  "x-ajv": {
+    "coerceTypes": "array"
+  },
+  "type": "object",
+  "title": "Api config",
+  "additionalProperties": false,
+  "required": [
+    "privateDirectoryUrl",
+    "privateEventsUrl",
+    "authorizedIps",
+    "port",
+    "secretKeys",
+    "observer",
+    "mongo",
+    "backupDir",
+    "dumpKeys",
+    "rsyncKeys",
+    "cloudArchive",
+    "rsync",
+    "splitSize",
+    "rotation",
+    "tmpdir",
+    "autoTask",
+    "serveExtraDirs"
+  ],
+  "properties": {
+    "port": {
+      "type": "number"
+    },
+    "privateDirectoryUrl": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "authorizedIps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "privateEventsUrl": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "secretKeys": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events"],
+      "properties": {
+        "events": {
+          "type": "string"
+        }
+      }
+    },
+    "observer": {
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "port": {
+          "type": "number"
+        }
+      }
+    },
+    "mongo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "readPreference", "cmdTmpl", "ignoreDBs", "dumpParams"],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "readPreference": {
+          "type": "string"
+        },
+        "cmdTmpl": {
+          "type": "string"
+        },
+        "ignoreDBs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dumpParams": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "backupDir": {
+      "type": "string"
+    },
+    "dumpKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rsyncKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ownerExports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir", "mongo", "dirs"],
+      "properties": {
+        "dir": {
+          "type": "string"
+        },
+        "mongo": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["dbs"],
+          "properties": {
+            "dbs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["db", "collections"],
+                "properties": {
+                  "db": {
+                    "type": "string"
+                  },
+                  "collections": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["collection"],
+                      "properties": {
+                        "collection": {
+                          "type": "string"
+                        },
+                        "ownerType": {
+                          "type": "string"
+                        },
+                        "project": {
+                          "type": "string"
+                        },
+                        "filter": {
+                          "type": "string"
+                        },
+                        "ignoreFilterWarning": {
+                          "type": "boolean"
+                        },
+                        "linkedCollections": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["collection", "filter"],
+                            "properties": {
+                              "collection": {
+                                "type": "string"
+                              },
+                              "project": {
+                                "type": "string"
+                              },
+                              "filter": {
+                                "type": "string"
+                              },
+                              "ignoreFilterWarning": {
+                                "type": "boolean"
+                              },
+                              "optional": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        },
+                        "linkedDirs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": ["name", "path"],
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "path": {
+                                "type": "string"
+                              },
+                              "ignorePathWarning": {
+                                "type": "boolean"
+                              },
+                              "optional": {
+                                "type": "boolean"
+                              }                
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "dirs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "path"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "ignorePathWarning": {
+                "type": "boolean"
+              },
+              "optional": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "cloudArchive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "rsync": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "sshKey": {
+          "type": "string"
+        }
+      }
+    },
+    "splitSize": {
+      "type": "string"
+    },
+    "rotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day", "week", "month", "quarter", "year"],
+      "properties": {
+        "day": {
+          "type": "integer"
+        },
+        "week": {
+          "type": "integer"
+        },
+        "month": {
+          "type": "integer"
+        },
+        "quarter": {
+          "type": "integer"
+        },
+        "year": {
+          "type": "integer"
+        }
+      }
+    },
+    "tmpdir": {
+      "type": "string"
+    },
+    "autoTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exec", "cron"],
+      "properties": {
+        "exec": {
+          "type": "string"
+        },
+        "cron": {
+          "type": "string"
+        }
+      }
+    },
+    "serveExtraDirs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "path"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "util": {},
+    "get": {},
+    "has": {}
+  }
+}

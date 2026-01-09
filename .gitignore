@@ -1,8 +1,4 @@
 data/
 node_modules/
-.nuxt
-dist
-nuxt-dist
-
-public/assets/css/
-public/assets/fonts/
+api/config/local-*
+.type/
