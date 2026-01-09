@@ -10,7 +10,7 @@ module.exports = {
     port: 9092
   },
   mongo: {
-    cmdTmpl: `docker run --privileged=true --network=host --rm -v /tmp:/tmp -v ${process.cwd()}:/workdir/:Z -w /workdir/ mongo:8.0.17 bash -c "CMD"`,
+    // cmdTmpl: `docker run --privileged=true --network=host --rm -v /tmp:/tmp -v ${process.cwd()}:/workdir/:Z -w /workdir/ mongo:8.0.17 bash -c "CMD"`,
     dumpParams: {
       'notify-production': '--excludeCollection=notifications'
     }

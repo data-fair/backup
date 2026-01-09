@@ -7,7 +7,9 @@ export function exec (cmd: string, opts: SpawnOptions = {}) {
   debug('exec command', cmd, opts)
   return new Promise<void>((resolve, reject) => {
     // ignore stdin and stdout, inherit stderr
-    const childProcess = spawn(cmd, { shell: true, stdio: ['ignore', 'ignore', 'inherit'], ...opts })
+    // const stdio = ['ignore', 'ignore', 'inherit']
+    const stdio = 'ignore'
+    const childProcess = spawn(cmd, { shell: true, stdio, ...opts })
     childProcess.on('error', (err) => {
       debug('exec finished with error', err)
       reject(err)
