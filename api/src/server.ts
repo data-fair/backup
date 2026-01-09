@@ -31,7 +31,7 @@ export const start = async () => {
     cron.schedule(config.autoTask.cron, async () => {
       try {
         console.info(`\nrunning automated task "${config.autoTask.exec}"\n`)
-        await exec(config.autoTask.exec)
+        await exec(config.autoTask.exec, { stdio: 'inherit' })
         console.info('\nautomated task done\n')
       } catch (err) {
         console.error('problem while running automated task', err)
