@@ -63,7 +63,9 @@ export const dump = async (dumpKey: string, _name?: string) => {
       }
       cmd += ` --uri ${mongoUrl.href}`
       await exec(config.mongo.cmdTmpl.replace('CMD', cmd))
+      debug('dump finished, split archive')
       await splitArchive({ tmpPath, name: `mongo-${db}.gz` }, name)
+      debug('cleanup tmp file')
       await tmpFile.cleanup()
     }
     await client.close()
@@ -73,7 +75,9 @@ export const dump = async (dumpKey: string, _name?: string) => {
     const tmpDir = await tmp.dir({ unsafeCleanup: true, dir: config.tmpdir })
     const tmpPath = `${tmpDir.path}/archive.zip`
     await exec(`zip ${tmpPath} -q -r -- *`, { cwd: dirPath })
+    debug('zip finished, split archive')
     await splitArchive({ tmpPath, name: `${archiveName}.zip` }, name)
+    debug('cleanup tmp file')
     await tmpDir.cleanup()
   } else {
     throw new Error(`Unknown dump key "${dumpKey}"`)
