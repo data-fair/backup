@@ -9,7 +9,7 @@ export function exec (cmd: string, opts: SpawnOptions = {}) {
     // ignore stdin and stdout, inherit stderr
     // const stdio = ['ignore', 'ignore', 'inherit']
     const stdio = 'ignore'
-    const childProcess = spawn(cmd, { shell: true, stdio, ...opts })
+    const childProcess = spawn(cmd.trim(), { shell: true, stdio, ...opts })
     childProcess.on('error', (err) => {
       debug('exec finished with error', err)
       reject(err)
