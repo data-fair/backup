@@ -5,6 +5,9 @@ import localizedFormat from 'dayjs/plugin/localizedFormat.js'
 import 'dayjs/locale/fr.js'
 import * as dumpUtils from '../src/dump.ts'
 import eventsQueue from '@data-fair/lib-node/events-queue.js'
+import debugModule from 'debug'
+
+const debug = debugModule('dump')
 
 dayjs.locale('fr')
 dayjs.extend(localizedFormat)
@@ -32,6 +35,7 @@ async function main () {
     } else {
       await dumpUtils.dump(process.argv[2], process.argv[3])
     }
+    debug('send success event')
     eventsQueue.pushEvent({
       topic: { key: 'backup:success' },
       title: `Sauvegarde de "${process.argv[2]}" terminée avec succès`,
@@ -40,6 +44,7 @@ async function main () {
     await eventsQueue.stop()
     console.log('dump finished')
   } catch (err: any) {
+    debug('send failure event')
     eventsQueue.pushEvent({
       topic: { key: 'backup:failure' },
       title: `ATTENTION ! Sauvegarde de "${process.argv[2]}" a échoué`,

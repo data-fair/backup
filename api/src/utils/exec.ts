@@ -3,7 +3,7 @@ import debugModule from 'debug'
 
 const debug = debugModule('exec')
 
-export async function exec (cmd: string, opts: SpawnOptions = {}) {
+export function exec (cmd: string, opts: SpawnOptions = {}) {
   debug('exec command', cmd, opts)
   return new Promise<void>((resolve, reject) => {
     const childProcess = spawn(cmd, { shell: true, stdio: 'inherit', ...opts })
